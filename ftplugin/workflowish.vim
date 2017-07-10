@@ -227,7 +227,7 @@ function! WorkflowishBreadcrumbs(lstart, lend)
 endfunction
 
 function! TodoSwitcher()
-  let c = normal col(".")
+  let c = col(".")
   let line = getline(".")
   echo line[c]
 endfunction
