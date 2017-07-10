@@ -227,7 +227,9 @@ function! WorkflowishBreadcrumbs(lstart, lend)
 endfunction
 
 function! TodoSwitcher()
-  echo "switch!!"
+  let c = normal col(".")
+  let line = getline(".")
+  echo line[c]
 endfunction
 "}}}
 " Feature : Focus {{{
