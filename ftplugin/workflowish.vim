@@ -1,8 +1,13 @@
-setlocal foldlevel=1
+setlocal foldlevel=0
 setlocal foldenable
 setlocal sw=2 sts=2
 setlocal expandtab
+
+" foldした時に表示するtextを決める
 setlocal foldtext=WorkflowishFoldText()
+
+" foldする条件を決める
+" v:lnumには行数がはいる
 setlocal foldmethod=expr
 setlocal foldexpr=WorkflowishCompactFoldLevel(v:lnum)
 
