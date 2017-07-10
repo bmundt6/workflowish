@@ -206,7 +206,7 @@ function! WorkflowishFoldText()
       let firstline = substitute(firstline, "\\v^ {".w:workflowish_focus_indent."}", "", "")
     end
 
-    return "DONE" . firstline . repeat(" ", s:WindowWidth()-s:StringWidth(firstline.textend)-4) . textend
+    return firstline . repeat(" ", s:WindowWidth()-s:StringWidth(firstline.textend)) . textend
   endif
 endfunction
 
@@ -226,7 +226,7 @@ function! WorkflowishBreadcrumbs(lstart, lend)
   return breadtrace . repeat(" ", s:WindowWidth()-s:StringWidth(breadtrace))
 endfunction
 
-function! todoSwitcher()
+function! TodoSwitcher()
   echo "switch!!"
 end function
 "}}}
