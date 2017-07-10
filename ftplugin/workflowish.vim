@@ -88,6 +88,8 @@ endfunction
 " Window attribute methods {{{
 " Couldn't find any other 'sane' way to initialize window variables
 
+" 現在フォーカスしている場所の先頭の行数を返す
+" フォーカスしていない場合は0
 function! s:GetFocusOn()
   if !exists("w:workflowish_focus_on")
     let w:workflowish_focus_on = 0
@@ -95,6 +97,8 @@ function! s:GetFocusOn()
   return w:workflowish_focus_on
 endfunction
 
+" フォーカス機能を利用したときに実行される
+" フォーカスしたとこの行数をセットする
 function! s:SetFocusOn(lnum)
   let w:workflowish_focus_on = a:lnum
 endfunction
@@ -126,10 +130,11 @@ function! s:GetFocusOnEnd(lnum, focusOn)
 endfunction
 
 " This method is quite slow in big files
+" 現在のインデントの終わりを見つける
 function! s:RecomputeFocusOnEnd(lfrom)
-  let lend = line('$')
+  let lend = line('$') " 一番下の行
   if a:lfrom > 0
-    let foldindent = indent(a:lfrom)
+    let foldindent = indent(a:lfrom) " インデントの階数
 
     let w:workflowish_focus_on_end = lend
     let lnum = a:lfrom+1
@@ -181,15 +186,18 @@ function! s:ComputeFoldLevel(lnum, indent_offset)
   endif
 endfunction
 
+" foldしたときのテキストを決める
 function! WorkflowishFoldText()
   let focusOn = s:GetFocusOn()
   if l:focusOn > 0 && !(v:foldstart >= l:focusOn && v:foldstart <= s:RecomputeFocusOnEnd(l:focusOn))
+  " フォーカス機能使ってるとき
     if v:foldstart ==# 1
       return WorkflowishBreadcrumbs(v:foldstart, v:foldend)
     else
       return repeat("- ", s:WindowWidth() / 2)
     endif
   else
+  " 使ってないとき
     let lines = v:foldend - v:foldstart
     let firstline = getline(v:foldstart)
     let textend = '|' . lines . '| '
@@ -198,7 +206,7 @@ function! WorkflowishFoldText()
       let firstline = substitute(firstline, "\\v^ {".w:workflowish_focus_indent."}", "", "")
     end
 
-    return firstline . repeat(" ", s:WindowWidth()-s:StringWidth(firstline.textend)) . textend
+    return "DONE" . firstline . repeat(" ", s:WindowWidth()-s:StringWidth(firstline.textend)-4) . textend
   endif
 endfunction
 
@@ -217,6 +225,10 @@ function! WorkflowishBreadcrumbs(lstart, lend)
   endif
   return breadtrace . repeat(" ", s:WindowWidth()-s:StringWidth(breadtrace))
 endfunction
+
+function! todoSwitcher()
+  echo "switch!!"
+end function
 "}}}
 " Feature : Focus {{{
 
