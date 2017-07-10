@@ -228,7 +228,7 @@ endfunction
 
 function! TodoSwitcher()
   echo "switch!!"
-end function
+endfunction
 "}}}
 " Feature : Focus {{{
 
