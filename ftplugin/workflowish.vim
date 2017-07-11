@@ -32,6 +32,10 @@ endif
 
 nnoremap <buffer> zq :call WorkflowishFocusToggle(line("."))<cr>
 nnoremap <buffer> zp :call WorkflowishFocusPrevious()<cr>
+" * set your terminal that send ✠ to vim when you push <C-Enter> 
+nnoremap <buffer> ✠ :call TodoSwitcher()<cr>
+" * set up your terminal that send ࿀ to vim when you push <S-Enter>
+nnoremap <buffer> ࿀ :call AddNewLine()<cr>i
 
 if g:workflowish_disable_zq_warning == 0
   nnoremap <buffer> ZQ :call WorkflowishZQWarningMessage()<cr>
@@ -226,11 +230,6 @@ function! WorkflowishBreadcrumbs(lstart, lend)
   return breadtrace . repeat(" ", s:WindowWidth()-s:StringWidth(breadtrace))
 endfunction
 
-function! TodoSwitcher()
-  let c = col(".")
-  let line = getline(".")
-  echo line[c]
-endfunction
 "}}}
 " Feature : Focus {{{
 
@@ -300,5 +299,30 @@ function! workflowish#convert_from_workflowy()
 endfunction
 
 "}}}
+
+" Feature : Added {{{
+
+" todoの入れ替え
+function! TodoSwitcher()
+  let c = col(".")
+  let l = line(".")
+  let line = getline(".")
+  normal ^
+  let head = col(".")
+  if line[head-1] == '*'
+    normal s-
+  elseif line[head-1] == '-'
+    normal s*
+  endif
+  call cursor(l, c)
+endfunction
+
+" 折りたたみを開かずに新しいlineを加える
+function! AddNewLine()
+  let last = s:RecomputeFocusOnEnd(line('.'))
+  call append(last, '')
+  call cursor(last+1, 1)
+endfunction
+" }}}
 
 " vim:set fdm=marker sw=2 sts=2 et:
