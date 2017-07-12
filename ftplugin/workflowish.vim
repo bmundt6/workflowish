@@ -302,27 +302,37 @@ endfunction
 
 " Feature : Added {{{
 
-" todoの入れ替え
+" TodoSwitcher() : switch *todo and -done {{{
 function! TodoSwitcher()
   let c = col(".")
   let l = line(".")
   let line = getline(".")
-  normal ^
+  let isfolded = foldclosed(l)
+
+  normal zo^
   let head = col(".")
+
   if line[head-1] == '*'
     normal s-
   elseif line[head-1] == '-'
     normal s*
   endif
-  call cursor(l, c)
-endfunction
 
-" 折りたたみを開かずに新しいlineを加える
+  call cursor(l, c)
+
+  if isfolded > 0
+    normal zc
+  endif
+
+endfunction
+" }}}
+" AddNewLine() : add new line without foldopen {{{
 function! AddNewLine()
   let last = s:RecomputeFocusOnEnd(line('.'))
   call append(last, '')
   call cursor(last+1, 1)
 endfunction
+"}}}
 " }}}
 
 " vim:set fdm=marker sw=2 sts=2 et:
