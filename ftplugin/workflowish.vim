@@ -36,11 +36,11 @@ nnoremap <buffer> zp :call WorkflowishFocusPrevious()<cr>
 noremap <buffer> ✠ :call TodoSwitcher()<cr>
 " * set up your terminal that send ࿀ to vim when you push <S-Enter>
 noremap <buffer> ࿀ :call AddNewLine()<cr>i
-noremap <buffer> <C-s> <ESC>:call workflowish#InputTime()<cr>a
-inoremap <buffer> <C-s> <ESC>:call workflowish#InputTime()<cr>a
+noremap <buffer> <c-t> <ESC>:call workflowish#InputTime()<cr>a 
+inoremap <buffer> <c-t> <ESC>:call workflowish#InputTime()<cr>a 
 
-noremap <buffer> <C-s> <ESC>:call workflowish#InputDate()<cr>a
-inoremap <buffer> <C-s> <ESC>:call workflowish#InputDate()<cr>a
+noremap <buffer> <C-d> <ESC>:call workflowish#InputDate()<cr>a 
+inoremap <buffer> <C-d> <ESC>:call workflowish#InputDate()<cr>a 
 
 noremap <buffer> <C-o> <ESC>:call workflowish#addTask()<cr>a
 inoremap <buffer> <C-o> <ESC>:call workflowish#addTask()<cr>a
