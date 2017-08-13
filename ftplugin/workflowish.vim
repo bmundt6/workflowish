@@ -38,6 +38,9 @@ noremap <buffer> ✠ :call TodoSwitcher()<cr>
 noremap <buffer> ࿀ :call AddNewLine()<cr>i
 noremap <buffer> <C-s> <ESC>:call workflowish#InputTime()<cr>a
 inoremap <buffer> <C-s> <ESC>:call workflowish#InputTime()<cr>a
+noremap <buffer> <C-s> <ESC>:call workflowish#InputDate()<cr>a
+inoremap <buffer> <C-s> <ESC>:call workflowish#InputDate()<cr>a
+
 
 
 if g:workflowish_disable_zq_warning == 0
@@ -356,6 +359,13 @@ function! workflowish#InputTime()
   execute "normal a" . t
 endfunction
 " }}}
+" InputDate() : input the date formatted as #0412 {{{
+function! workflowish#InputDate()
+  let d = "#" . strftime("%m%d")
+  execute "normal a" . d
+endfunction
+" }}}
+
 
 
 " }}}
