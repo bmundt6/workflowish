@@ -38,10 +38,12 @@ noremap <buffer> ✠ :call TodoSwitcher()<cr>
 noremap <buffer> ࿀ :call AddNewLine()<cr>i
 noremap <buffer> <C-s> <ESC>:call workflowish#InputTime()<cr>a
 inoremap <buffer> <C-s> <ESC>:call workflowish#InputTime()<cr>a
+
 noremap <buffer> <C-s> <ESC>:call workflowish#InputDate()<cr>a
 inoremap <buffer> <C-s> <ESC>:call workflowish#InputDate()<cr>a
 
-
+noremap <buffer> <C-o> <ESC>:call workflowish#addTask()<cr>a
+inoremap <buffer> <C-o> <ESC>:call workflowish#addTask()<cr>a
 
 if g:workflowish_disable_zq_warning == 0
   nnoremap <buffer> ZQ :call WorkflowishZQWarningMessage()<cr>
@@ -365,7 +367,20 @@ function! workflowish#InputDate()
   execute "normal a" . d
 endfunction
 " }}}
+" addTask() : input the task template as * @T #0412 {{{
+function! workflowish#addTask()
+  execute "normal o* @T " . workflowish#getDate() . " "
+endfunction
+" }}}
 
+"{{{
+function! workflowish#getTime()
+  return "[" . strftime("%H:%M") . "]"
+endfunction
+function! workflowish#getDate()
+  return "#" . strftime("%m%d")
+endfunction
+"}}}
 
 
 " }}}
