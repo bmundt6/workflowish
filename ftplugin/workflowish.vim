@@ -307,23 +307,36 @@ endfunction
 
 " TodoSwitcher() : switch *todo and -done {{{
 function! TodoSwitcher()
-  let c = col(".")
-  let l = line(".")
-  let line = getline(".")
-  let isfolded = foldclosed(l)
+  let l:l = line(".")
+  let l:isfolded = foldclosed(l)
+  " if l:l is in closed fold, assign l:l the number of first line in that fold.
+  if l:isfolded != -1 && l:isfolded != l
+    let l:l = l:isfolded
+  endif
+  let l:line = getline(l:l)
+  let l:sp = split(l:line, ' ')
+  normal zo
 
-  normal zo^
-  let head = col(".")
-
-  if line[head-1] == '*'
-    normal s-
-  elseif line[head-1] == '-'
-    normal s*
+  if l:sp[0] == '*'
+    call remove(l:sp, 0)
+    call insert(l:sp, '-', 0)
+    if l:sp[1] == '@T'
+      call remove(l:sp, 1)
+      call insert(l:sp, '@D', 1)
+    endif
+  elseif l:sp[0] == '-'
+    call remove(l:sp, 0)
+    call insert(l:sp, '*', 0)
+    if l:sp[1] == '@D'
+      call remove(l:sp, 1)
+      call insert(l:sp, '@T', 1)
+    endif
   endif
 
-  call cursor(l, c)
+  call setline(l:l, repeat(' ', indent(l:l)) . join(l:sp))
 
-  if isfolded > 0
+  " If line s:l was in closed fold, close fold
+  if l:isfolded > 0
     normal zc
   endif
 
