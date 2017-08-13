@@ -45,6 +45,9 @@ inoremap <buffer> <C-s> <ESC>:call workflowish#InputDate()<cr>a
 noremap <buffer> <C-o> <ESC>:call workflowish#addTask()<cr>a
 inoremap <buffer> <C-o> <ESC>:call workflowish#addTask()<cr>a
 
+" auto insert *
+nmap <buffer> o o* 
+
 if g:workflowish_disable_zq_warning == 0
   nnoremap <buffer> ZQ :call WorkflowishZQWarningMessage()<cr>
 endif
