@@ -33,9 +33,12 @@ endif
 nnoremap <buffer> zq :call WorkflowishFocusToggle(line("."))<cr>
 nnoremap <buffer> zp :call WorkflowishFocusPrevious()<cr>
 " * set your terminal that send ✠ to vim when you push <C-Enter> 
-nnoremap <buffer> ✠ :call TodoSwitcher()<cr>
+noremap <buffer> ✠ :call TodoSwitcher()<cr>
 " * set up your terminal that send ࿀ to vim when you push <S-Enter>
-nnoremap <buffer> ࿀ :call AddNewLine()<cr>i
+noremap <buffer> ࿀ :call AddNewLine()<cr>i
+noremap <buffer> <C-s> <ESC>:call workflowish#InputTime()<cr>a
+inoremap <buffer> <C-s> <ESC>:call workflowish#InputTime()<cr>a
+
 
 if g:workflowish_disable_zq_warning == 0
   nnoremap <buffer> ZQ :call WorkflowishZQWarningMessage()<cr>
@@ -333,6 +336,15 @@ function! AddNewLine()
   call cursor(last+1, 1)
 endfunction
 "}}}
+
+" InputTime() : input the time formatted like [04:56] {{{
+function! workflowish#InputTime()
+  let t = "[" . strftime("%H:%M") . "]"
+  execute "normal a" . t
+endfunction
+" }}}
+
+
 " }}}
 
 " vim:set fdm=marker sw=2 sts=2 et:
