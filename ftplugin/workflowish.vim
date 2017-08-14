@@ -48,6 +48,11 @@ inoremap <buffer> <C-o> <ESC>:call workflowish#addTask()<cr>a
 " auto insert *
 nmap <buffer> o o* 
 
+" indent
+nmap <buffer> <TAB> >>
+" set up your terminal that send ࿁ to vim when you push <s-tab>
+nmap <buffer> ࿁ <<
+
 if g:workflowish_disable_zq_warning == 0
   nnoremap <buffer> ZQ :call WorkflowishZQWarningMessage()<cr>
 endif
