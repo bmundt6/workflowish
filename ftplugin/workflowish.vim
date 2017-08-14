@@ -377,7 +377,7 @@ endfunction
 " }}}
 " addTask() : input the task template as * @T #0412 {{{
 function! workflowish#addTask()
-  execute "normal o* @T " . workflowish#getDate() . " "
+  execute "normal o@T " . workflowish#getDate() . " "
 endfunction
 " }}}
 
