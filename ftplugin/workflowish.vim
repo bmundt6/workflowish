@@ -381,6 +381,65 @@ function! workflowish#addTask()
 endfunction
 " }}}
 
+" indent() : return indent()/2 {{{
+function! workflowish#indent(lnum)
+  return indent(a:lnum)/2
+endfunction
+"}}}
+" line() : return current line number considering folds {{{
+function! workflowish#line()
+  let fnum = foldclosed(line("."))
+  if fnum == -1
+    return line(".")
+  endif
+  return fnum
+endfunction
+"}}}
+" getline(lnum) : return current line buffer {{{
+function! workflowish#getline(lnum)
+  let line = getline(a:lnum)
+  let pos = stridx(line, "*")
+  return line[pos+2:]
+endfunction
+" }}}
+" findParent(){{{
+function! workflowish#findParent(lnum)
+  let lnum = a:lnum
+  let indent = workflowish#indent(lnum)
+  if indent == 0
+    return -1
+  endif
+  while workflowish#indent(lnum) != indent-1
+    let lnum = lnum - 1
+  endwhile
+  return lnum
+endfunction
+"}}}
+" getParents() {{{ return parents list
+function! workflowish#getParents()
+  let parentList = []
+  let parent = workflowish#findParent(workflowish#line())
+  while parent != -1
+    call add(parentList, parent)
+    let parent = workflowish#findParent(parent)
+  endwhile
+  return parentList
+endfunction
+"}}}
+" viewParentLineList()  {{{
+function! workflowish#getParentLineList()
+  let parentsList = workflowish#getParents()
+  let lineList = []
+  call reverse(parentsList)
+  for lnum in parentsList
+    call add(lineList, "{" . workflowish#getline(lnum). "}")
+  endfor
+  return join(lineList, "/")
+endfunction
+"}}}
+    
+
+
 "{{{
 function! workflowish#getTime()
   return "[" . strftime("%H:%M") . "]"
