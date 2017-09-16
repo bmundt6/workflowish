@@ -398,7 +398,7 @@ endfunction
 " getline(lnum) : return current line buffer {{{
 function! workflowish#getline(lnum)
   let line = getline(a:lnum)
-  let pos = stridx(line, "*")
+  let pos = match(line, "[*|-]")
   return line[pos+2:]
 endfunction
 " }}}
