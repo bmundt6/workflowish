@@ -451,5 +451,34 @@ endfunction
 
 
 " }}}
+" findSameRankLineList(...) return same rank line list {{{
+function! workflowish#findSameRankLineList(...)
+  let l:last_line = line("$")
+  " find start position
+  if a:0 == 0
+    let l:start_lnum = 1
+  else
+    " find parent
+    let l:start_lnum = workflowish#findParent(a:1) + 1
+    if l:start_lnum == 0
+      let l:start_lnum = 1
+    endif
+  endif
+  let l:target_indent = workflowish#indent(l:start_lnum)
 
+  " search same rank line from start_lnum
+  let l:lnum = l:start_lnum
+  let l:line_list = []
+  let l:indent = workflowish#indent(l:lnum)
+
+  while l:target_indent <= l:indent && l:lnum <= l:last_line
+    if l:indent == l:target_indent
+      call add(l:line_list, l:lnum)
+    endif
+    let l:lnum = l:lnum + 1
+    let l:indent = workflowish#indent(l:lnum)
+  endwhile
+
+  return l:line_list
+endfunction "}}}
 " vim:set fdm=marker sw=2 sts=2 et:
