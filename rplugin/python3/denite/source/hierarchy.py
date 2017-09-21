@@ -18,14 +18,14 @@ class Source(Base):
         # TODO
 
     def gather_candidates(self, context):
-        context['is_interactive'] = True
-        now_lnum = self.vim.call('line', '.')
+        #context['is_interactive'] = True
         args = context['sources'][0]['args']
         if args:
-            arg = int(args[0])
+            arg = int(args)
             denite_bufnr = self.vim.call('bufnr', '')
             self.vim.command('buffer ' + str(context['bufnr']))
-            linenums = self.vim.call('workflowish#findSameRankLineList')
+            linenums = self.vim.call('workflowish#findSameRankLineList', arg)
+            self.vim.command("sp " + str(linenums[0]))
             self.vim.command('buffer ' + str(denite_bufnr))
 
         else:

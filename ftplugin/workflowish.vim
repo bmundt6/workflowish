@@ -460,6 +460,7 @@ endfunction
 " }}}
 " findSameRankLineList(...) return same rank line list {{{
 function! workflowish#findSameRankLineList(...)
+  echo "Rank"
   let l:last_line = line("$")
   " find start position
   if a:0 == 0
