@@ -20,9 +20,9 @@ class Kind(Base):
         #self.vim.command('5')
         #context['input'] = str(context['sources'][0]['args'])
         #context['source']['wo'] = [2]
-        context['input'] = str(context['source'])
+        #context['input'] = ''
         #context['input'] = str(context.keys())
-        #lnum = target['action__num']
+        lnum = target['action__num']
         #winid = target['action__winid']
         #denite_winnr = self.vim.call('bufwinid', '%')
         #self.vim.call('win_gotoid', winid)
