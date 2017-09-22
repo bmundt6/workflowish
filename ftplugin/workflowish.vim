@@ -406,7 +406,7 @@ endfunction
 function! workflowish#getbufline(expr, lnum)
   let line = getbufline(a:expr, a:lnum)[0]
   let pos = match(line, "[*|-]")
-  return line[pos+2:]
+  return line[pos:]
 endfunction
 " }}}
 " findParent(){{{
