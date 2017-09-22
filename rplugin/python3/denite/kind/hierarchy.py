@@ -25,6 +25,9 @@ class Kind(Base):
     def action_preview(self, context):
         pass
 
+    def action_jump(self, context):
+        self._jump(context)
+
 
     def _validate_arg(self, arg):
         if type(arg) != str:
@@ -35,5 +38,6 @@ class Kind(Base):
     def _adjust_arg(self, arg):
         return str(arg + 1)
 
-    def _jump(self, line):
-        self.vim.call('cursor', line, 0)
+    def _jump(self, context):
+        arg = context['targets'][0]['action__num']
+        context['targets'][0]['action__win'].cursor = [int(arg), 0]
