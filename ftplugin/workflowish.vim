@@ -444,8 +444,19 @@ function! workflowish#getParentLineList()
   return join(lineList, "/")
 endfunction
 "}}}
-    
-
+" checkBottomRank(lnum) : if Bottom, return 1. else return -1 {{{
+function! workflowish#checkBottomRank(lnum)
+  let current_line = workflowish#indent(a:lnum)
+  let next_line = workflowish#indent(a:lnum + 1)
+  if next_line <= 0
+    return 1
+  endif
+  if l:current_line >= l:next_line
+    return 1
+  endif
+  return -1
+endfunction
+"}}}
 
 "{{{
 function! workflowish#getTime()

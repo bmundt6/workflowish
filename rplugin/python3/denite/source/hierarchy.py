@@ -11,29 +11,29 @@ class Source(Base):
         self.name = 'hierarchy'
         self.kind = 'hierarchy'
 
-    # def on_init(self, context):
+    def on_init(self, context):
+        context['__fmt'] = '%' + str(len(
+                    str(self.vim.call('line', '$')))) + 'd: %s'
         # TODO
 
     # def on_close(self, context):
         # TODO
 
     def gather_candidates(self, context):
-        #context['is_interactive'] = True
         args = context['sources'][0]['args']
         if args:
-            arg = int(args)
-            denite_bufnr = self.vim.call('bufnr', '')
-            self.vim.command('buffer ' + str(context['bufnr']))
+            arg = args[0]
             linenums = self.vim.call('workflowish#findSameRankLineList', arg)
-            self.vim.command("sp " + str(linenums[0]))
-            self.vim.command('buffer ' + str(denite_bufnr))
-
         else:
             linenums = self.vim.call('workflowish#findSameRankLineList')
+
         line_list = self.__get_line_list(context['bufnr'], linenums)
+
         return list(map(
             lambda line: {
                 'word': line['li'],
+                'abbr': (context['__fmt'] % (line['lnum'], line['li'])),
+                'action__win': self.vim.current.window,
                 'action__num': line['lnum']},
             line_list))
 
