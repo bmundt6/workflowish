@@ -466,6 +466,14 @@ function! workflowish#getDate()
 endfunction
 "}}}
 
+" prettyPrinter(line) : return reshape line {{{
+function! workflowish#prettyPrinter(line)
+  let pos = match(a:line, "[*|-]")
+  return a:line[pos:]
+endfunction
+"}}}
+  
+
 
 " }}}
 " findSameRankLineList(...) return same rank line list {{{
