@@ -457,7 +457,6 @@ function! workflowish#checkBottomRank(lnum)
   return -1
 endfunction
 "}}}
-
 "{{{
 function! workflowish#getTime()
   return "[" . strftime("%H:%M") . "]"
