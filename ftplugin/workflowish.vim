@@ -13,6 +13,11 @@ setlocal foldexpr=WorkflowishCompactFoldLevel(v:lnum)
 
 setlocal autoindent
 
+" Commands {{{
+command! B Denite tagLine:@B
+
+" }}}
+
 " Settings {{{
 
 " This will use horizontal scroll in focus mode
