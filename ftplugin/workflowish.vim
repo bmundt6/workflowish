@@ -55,8 +55,10 @@ nmap <buffer> o o*
 
 " indent
 nmap <buffer> <TAB> >>
+imap <buffer> <TAB> <ESC>:><cr>i
 " set up your terminal that send ࿁ to vim when you push <s-tab>
 nmap <buffer> ࿁ <<
+imap <buffer> ࿁ <ESC>:<<cr>i
 
 if g:workflowish_disable_zq_warning == 0
   nnoremap <buffer> ZQ :call WorkflowishZQWarningMessage()<cr>
