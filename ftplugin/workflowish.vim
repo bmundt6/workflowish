@@ -32,6 +32,10 @@ if !exists("g:workflowish_disable_zq_warning")
   let g:workflowish_disable_zq_warning = 0
 endif
 
+if !exists("g:workflowish_inbox_line_marker")
+  let g:workflowish_inbox_line_marker = "---inbox_end_line---"
+endif
+
 "}}}
 " Keybindings {{{
 
@@ -52,13 +56,14 @@ inoremap <buffer> <C-o> <ESC>:call workflowish#addTask()<cr>a
 
 " auto insert *
 nmap <buffer> o o* 
+nmap <buffer> <S-o> <S-o>* 
 
 " indent
 nmap <buffer> <TAB> >>
-imap <buffer> <TAB> <ESC>:><cr>i
+"imap <buffer> <TAB> <ESC>:><cr>i
 " set up your terminal that send ࿁ to vim when you push <s-tab>
 nmap <buffer> ࿁ <<
-imap <buffer> ࿁ <ESC>:<<cr>i
+"imap <buffer> ࿁ <ESC>:<<cr>i
 
 if g:workflowish_disable_zq_warning == 0
   nnoremap <buffer> ZQ :call WorkflowishZQWarningMessage()<cr>
@@ -462,6 +467,20 @@ function! workflowish#checkBottomRank(lnum)
     return 1
   endif
   return -1
+endfunction
+"}}}
+"addInbox : addInbox using g:workflowish_inbox_line_marker {{{
+function! workflowish#addInbox(...)
+  if len(a:000) == 0
+    call search(g:workflowish_inbox_line_marker)
+    normal zoO
+  else
+    let l:pos = search(g:workflowish_inbox_line_marker, 'n')
+    if l:pos > 0
+      call append(l:pos-1, "* ".a:1)
+      "TODO リスト対応
+    endif
+  endif
 endfunction
 "}}}
 "{{{
