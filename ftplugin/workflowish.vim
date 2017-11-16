@@ -15,7 +15,7 @@ setlocal autoindent
 
 " Commands {{{
 command! B Denite tagLine:@B
-
+command! I call workflowish#jumpInbox()
 " }}}
 
 " Settings {{{
@@ -477,12 +477,18 @@ function! workflowish#addInbox(...)
   else
     let l:pos = search(g:workflowish_inbox_line_marker, 'n')
     if l:pos > 0
-      call append(l:pos-1, "* ".a:1)
+      call append(l:pos-1, "  * ".a:1)
       "TODO リスト対応
     endif
   endif
 endfunction
 "}}}
+"jumpInbox : jump to g:workflowish_inbox_line_marker {{{
+function! workflowish#jumpInbox()
+  let l:pos = search(g:workflowish_inbox_line_marker, 'n')
+  call cursor(l:pos, 0)
+  normal zo
+endfunction
 "{{{
 function! workflowish#getTime()
   return "[" . strftime("%H:%M") . "]"
