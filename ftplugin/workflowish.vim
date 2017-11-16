@@ -16,6 +16,8 @@ setlocal autoindent
 " Commands {{{
 command! B Denite tagLine:@B
 command! I call workflowish#jumpInbox()
+command! H Denite hierarchy
+command! Tag Denite tag
 " }}}
 
 " Settings {{{
