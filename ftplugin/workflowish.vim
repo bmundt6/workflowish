@@ -15,7 +15,7 @@ setlocal autoindent
 
 " Commands {{{
 command! B Denite tagLine:@B
-command! I call workflowish#jumpInbox()
+command! -nargs=* I call workflowish#addInbox(<f-args>)
 command! H Denite hierarchy
 command! Tag Denite tag
 " }}}
@@ -474,8 +474,9 @@ endfunction
 "addInbox : addInbox using g:workflowish_inbox_line_marker {{{
 function! workflowish#addInbox(...)
   if len(a:000) == 0
-    call search(g:workflowish_inbox_line_marker)
-    normal zoO
+    "call search(g:workflowish_inbox_line_marker)
+    "normal zoO
+    call workflowish#jumpInbox()
   else
     let l:pos = search(g:workflowish_inbox_line_marker, 'n')
     if l:pos > 0
