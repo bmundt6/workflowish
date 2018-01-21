@@ -8,8 +8,8 @@ from .base import Base
 class Source(Base):
     def __init__(self, vim):
         super().__init__(vim)
-        self.name = 'hierarchy'
-        self.kind = 'hierarchy'
+        self.name = 'wo_hierarchy'
+        self.kind = 'wo_hierarchy'
 
     def on_init(self, context):
         context['__fmt'] = '%' + str(len(

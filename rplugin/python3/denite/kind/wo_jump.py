@@ -8,11 +8,11 @@ from .base import Base
 class Kind(Base):
     def __init__(self, vim):
         super().__init__(vim)
-        self.name = 'jump'
-        self.default_action = 'jump'
+        self.name = 'wo_jump'
+        self.default_action = 'wo_jump'
         self.denite_command = 'Denite'
 
-    def action_jump(self, context):
+    def action_wo_jump(self, context):
         self._jump(context)
 
     def action_preview(self, context):

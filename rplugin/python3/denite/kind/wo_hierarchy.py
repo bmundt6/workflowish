@@ -8,11 +8,11 @@ from .base import Base
 class Kind(Base):
     def __init__(self, vim):
         super().__init__(vim)
-        self.name = 'hierarchy'
-        self.default_action = 'hierarchy'
+        self.name = 'wo_hierarchy'
+        self.default_action = 'wo_hierarchy'
         self.denite_command = 'Denite'
 
-    def action_hierarchy(self, context):
+    def action_wo_hierarchy(self, context):
         arg = context['targets'][0]['action__num']
         if self.vim.call('workflowish#checkBottomRank', arg) == 1:
             context['targets'][0]['action__win'].cursor = [int(arg), 0]

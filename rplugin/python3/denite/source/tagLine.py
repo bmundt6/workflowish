@@ -8,8 +8,8 @@ from .base import Base
 class Source(Base):
     def __init__(self, vim):
         super().__init__(vim)
-        self.name = 'tagLine'
-        self.kind = 'jump'
+        self.name = 'wo_tagLine'
+        self.kind = 'wo_jump'
 
     #def on_init(self, context):
         # TODO
