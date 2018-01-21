@@ -50,11 +50,11 @@ noremap <buffer> ࿀ :call AddNewLine()<cr>i
 noremap <buffer> <c-t> <ESC>:call workflowish#InputTime()<cr>a 
 inoremap <buffer> <c-t> <ESC>:call workflowish#InputTime()<cr>a 
 
-noremap <buffer> <C-d> <ESC>:call workflowish#InputDate()<cr>a 
-inoremap <buffer> <C-d> <ESC>:call workflowish#InputDate()<cr>a 
+"noremap <buffer> <C-d> <ESC>:call workflowish#InputDate()<cr>a 
+"inoremap <buffer> <C-d> <ESC>:call workflowish#InputDate()<cr>a 
 
-noremap <buffer> <C-o> <ESC>:call workflowish#addTask()<cr>a
-inoremap <buffer> <C-o> <ESC>:call workflowish#addTask()<cr>a
+"noremap <buffer> <C-o> <ESC>:call workflowish#addTask()<cr>a
+"inoremap <buffer> <C-o> <ESC>:call workflowish#addTask()<cr>a
 
 " auto insert *
 nmap <buffer> o o* 
