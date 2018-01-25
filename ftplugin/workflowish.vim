@@ -15,9 +15,10 @@ setlocal autoindent
 
 " Commands {{{
 command! B Denite wo_tagLine:@B
+command! C Denite wo_tagLine:@cheat
 command! -nargs=* I call workflowish#addInbox(<f-args>)
 command! H Denite wo_hierarchy
-command! Tag Denite wo_tag
+command! T Denite wo_tag
 " }}}
 
 " Settings {{{
