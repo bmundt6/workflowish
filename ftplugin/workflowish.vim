@@ -18,7 +18,8 @@ command! B Denite wo_tagLine:@B
 command! C Denite wo_tagLine:@cheat
 command! -nargs=* I call workflowish#addInbox(<f-args>)
 command! H Denite wo_hierarchy
-command! T Denite wo_tag
+"command! T Denite wo_tag
+command! -nargs=? T call workflowish#T(<f-args>)
 " }}}
 
 " Settings {{{
@@ -543,4 +544,15 @@ function! workflowish#findSameRankLineList(...)
 
   return l:line_list
 endfunction "}}}
+" T() for 'T' command {{{
+function! workflowish#T(...)
+  if len(a:000) == 0
+    Denite wo_tag
+  else
+    let l:command = 'Denite wo_tagLine:' . a:1
+    "Denite wo_tagLine:a:1
+    execute l:command
+  endif
+endfunction
+"}}}
 " vim:set fdm=marker sw=2 sts=2 et:
