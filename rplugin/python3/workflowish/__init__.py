@@ -44,6 +44,18 @@ class workflowishUtils(object):
 
         return retlines
 
+    @neovim.function("ReplaceLines", sync=True)
+    def ReplaceLines(self, args):
+        '''
+        remove and append line
+        args[0] : remove lines list
+        args[1] : append line list(string)
+        '''
+        buf = self.nvim.current.buffer
+        for r, l in zip(args[0], args[1]):
+            # TODO 上から順番にsetすることによるズレの修正
+            buf.api.set_lines(r[0], r[1], False, l)
+
     def _patChecker(self, args):
         sharppat = '#[a-zA-Z0-9_-]*'
         atpat = '@[a-zA-Z0-9_-]*'
