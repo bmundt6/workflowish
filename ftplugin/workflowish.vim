@@ -14,12 +14,12 @@ setlocal foldexpr=WorkflowishCompactFoldLevel(v:lnum)
 setlocal autoindent
 
 " Commands {{{
-command! B Denite wo_tagLine:@B
-command! C Denite wo_tagLine:@cheat
-command! -nargs=* I call workflowish#addInbox(<f-args>)
-command! H Denite wo_hierarchy
+command! -buffer B Denite wo_tagLine:@B
+command! -buffer C Denite wo_tagLine:@cheat
+command! -buffer -nargs=* I call workflowish#addInbox(<f-args>)
+command! -buffer H Denite wo_hierarchy
 "command! T Denite wo_tag
-command! -nargs=? T call workflowish#T(<f-args>)
+command! -buffer -nargs=? T call workflowish#T(<f-args>)
 " }}}
 
 " Settings {{{
