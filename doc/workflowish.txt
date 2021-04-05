@@ -1,0 +1,99 @@
+*workflowish.txt*			For Vim version 8.2.  Last change: 2021 Apr 02
+
+                                                              *workflowish* *wofl*
+																Workflowish ~
+
+										A Workflowy-inspired todo-list plugin.
+
+==============================================================================
+CONTENTS                                                  *workflowish-contents*
+
+	Format ................................................ |workflowish-format|
+	Commands ............................................ |workflowish-commands|
+	Functions .......................................... |workflowish-functions|
+	Mappings ............................................ |workflowish-mappings|
+	Configuration .................................. |workflowish-configuration|
+
+==============================================================================
+FORMAT                                                      *workflowish-format*
+
+  Workflowish is enabled for files with the extension .wofl.
+  *.wofl files are expected to adhere to the following format:
+
+    * heading number one
+      additional text for heading 1
+      * an item
+      - a completed item (this will be highlighted as Comment)
+        \ a comment
+    * another heading
+
+==============================================================================
+COMMANDS                                                  *workflowish-commands*
+
+  :B
+    #TODO document :B
+  :C
+    #TODO document :C
+  :I
+    #TODO document :I
+  :H
+    #TODO document :H
+  :T
+    #TODO document :T
+
+==============================================================================
+FUNCTIONS                                                *workflowish-functions*
+
+  workflowish#*convert_from_workflowy()*
+
+    Call this function with a Workflowy export file opened to convert it to
+		|workflowish-format|.
+
+==============================================================================
+MAPPINGS                                                  *workflowish-mappings*
+
+   n    *zq*
+              Focus the current item or toggle focus mode off.
+   n    *zp*
+              Focus the parent of the current item.
+   nvo  ✠
+              Toggle between TODO and DONE state.
+   nvo  ࿀
+              Add a new line below current without opening folds.
+              #COMBAK: How is this useful?
+  invo  <C-t>
+              Append the current timestamp after the current line.
+   n    o
+              Start a new line with a bullet below current line.
+   n    O
+              Start a new line with a bullet above current line.
+   n    <TAB>
+              Shift the current line one tabwidth to the right.
+   n    ࿁
+              Shift the current line one tabwidth to the left.
+
+==============================================================================
+CONFIGURATION                                        *workflowish-configuration*
+
+Variables:
+
+  *g:workflowish_experimental_horizontal_focus*
+    Boolean
+    Default: 0
+    When this option is set, focusing an item scrolls the view horizontally
+    to the right so that the item appears in the leftmost visual column.
+
+  *g:workflowish_disable_zq_warning*
+    Boolean
+    Default: 0
+    By default, typing ZQ in normal mode will trigger a warning (in case
+    CapsLock is on). Set this option to disable the warning so that ZQ is
+    mappable.
+
+  *g:workflowish_inbox_line_marker*
+    String
+    Default: "---inbox_end_line---"
+    #TODO document g:workflowish_inbox_line_marker
+
+==============================================================================
+ vim:tw=78:ts=2:sw=2:noet:ft=help:norl:nolist:

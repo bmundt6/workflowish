@@ -43,6 +43,8 @@ endif
 "}}}
 " Keybindings {{{
 
+"FIXME: use <plug> mappings so they are customizable
+
 nnoremap <buffer> zq :call WorkflowishFocusToggle(line("."))<cr>
 nnoremap <buffer> zp :call WorkflowishFocusPrevious()<cr>
 " * set your terminal that send ✠ to vim when you push <C-Enter> 
@@ -59,6 +61,7 @@ inoremap <buffer> <c-t> <ESC>:call workflowish#InputTime()<cr>a
 "inoremap <buffer> <C-o> <ESC>:call workflowish#addTask()<cr>a
 
 " auto insert *
+"TODO: use vim-endwise plugin to implement this behavior in insert mode
 nmap <buffer> o o* 
 nmap <buffer> <S-o> <S-o>* 
 
