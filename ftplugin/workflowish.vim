@@ -43,22 +43,15 @@ endif
 "}}}
 " Keybindings {{{
 
-"FIXME: use <plug> mappings so they are customizable
+"FIXME: add a config to turn off default mappings
 
-nnoremap <buffer> zq :call WorkflowishFocusToggle(line("."))<cr>
-nnoremap <buffer> zp :call WorkflowishFocusPrevious()<cr>
-" * set your terminal that send ✠ to vim when you push <C-Enter> 
-noremap <buffer> ✠ :call TodoSwitcher()<cr>
-" * set up your terminal that send ࿀ to vim when you push <S-Enter>
-noremap <buffer> ࿀ :call AddNewLine()<cr>i
-noremap <buffer> <c-t> <ESC>:call workflowish#InputTime()<cr>a 
-inoremap <buffer> <c-t> <ESC>:call workflowish#InputTime()<cr>a 
-
-"noremap <buffer> <C-d> <ESC>:call workflowish#InputDate()<cr>a 
-"inoremap <buffer> <C-d> <ESC>:call workflowish#InputDate()<cr>a 
-
-"noremap <buffer> <C-o> <ESC>:call workflowish#addTask()<cr>a
-"inoremap <buffer> <C-o> <ESC>:call workflowish#addTask()<cr>a
+nnoremap <silent> <plug>(workflowish-focus-toggle) :call WorkflowishFocusToggle(line("."))<cr>
+nmap <buffer> zq <plug>(workflowish-focus-toggle)
+nnoremap <silent> <plug>(workflowish-focus-prev) :call WorkflowishFocusPrevious()<cr>
+nmap <buffer> zp <plug>(workflowish-focus-prev)
+noremap <silent> <plug>(workflowish-todo-toggle) :call TodoSwitcher()<cr>
+noremap <silent> <plug>(workflowish-append-newline) :call AddNewLine()<cr>i
+noremap <silent> <plug>(workflowish-insert-time) <ESC>:call workflowish#InputTime()<cr>a 
 
 " auto insert *
 "TODO: use vim-endwise plugin to implement this behavior in insert mode
@@ -67,10 +60,7 @@ nmap <buffer> <S-o> <S-o>*
 
 " indent
 nmap <buffer> <TAB> >>
-"imap <buffer> <TAB> <ESC>:><cr>i
-" set up your terminal that send ࿁ to vim when you push <s-tab>
-nmap <buffer> ࿁ <<
-"imap <buffer> ࿁ <ESC>:<<cr>i
+nmap <buffer> <S-TAB> <<
 
 if g:workflowish_disable_zq_warning == 0
   nnoremap <buffer> ZQ :call WorkflowishZQWarningMessage()<cr>
@@ -129,6 +119,8 @@ endfunction
 
 " 現在フォーカスしている場所の先頭の行数を返す
 " フォーカスしていない場合は0
+" Returns the line number at the beginning of the currently focused location
+" 0 if not in focus
 function! s:GetFocusOn()
   if !exists("w:workflowish_focus_on")
     let w:workflowish_focus_on = 0
@@ -138,6 +130,8 @@ endfunction
 
 " フォーカス機能を利用したときに実行される
 " フォーカスしたとこの行数をセットする
+" Executed when using the focus function
+" Sets the focused line number
 function! s:SetFocusOn(lnum)
   let w:workflowish_focus_on = a:lnum
 endfunction
@@ -170,6 +164,7 @@ endfunction
 
 " This method is quite slow in big files
 " 現在のインデントの終わりを見つける
+" Find the end of the current indentation
 function! s:RecomputeFocusOnEnd(lfrom)
   let lend = line('$') " 一番下の行
   if a:lfrom > 0
@@ -226,10 +221,12 @@ function! s:ComputeFoldLevel(lnum, indent_offset)
 endfunction
 
 " foldしたときのテキストを決める
+" Determine the text when folded
 function! WorkflowishFoldText()
   let focusOn = s:GetFocusOn()
   if l:focusOn > 0 && !(v:foldstart >= l:focusOn && v:foldstart <= s:RecomputeFocusOnEnd(l:focusOn))
   " フォーカス機能使ってるとき
+  " when focus mode is active
     if v:foldstart ==# 1
       return WorkflowishBreadcrumbs(v:foldstart, v:foldend)
     else
@@ -237,6 +234,7 @@ function! WorkflowishFoldText()
     endif
   else
   " 使ってないとき
+  " when focus mode is inactive
     let lines = v:foldend - v:foldstart
     let firstline = getline(v:foldstart)
     let textend = '|' . lines . '| '
@@ -374,7 +372,7 @@ function! TodoSwitcher()
 
 endfunction
 " }}}
-" AddNewLine() : add new line without foldopen {{{
+" AddNewLine() : add new line without a leading bullet {{{
 function! AddNewLine()
   let last = s:RecomputeFocusOnEnd(line('.'))
   call append(last, '')
@@ -487,6 +485,7 @@ function! workflowish#addInbox(...)
     if l:pos > 0
       call append(l:pos-1, "  * ".a:1)
       "TODO リスト対応
+      "TODO list support
     endif
   endif
 endfunction

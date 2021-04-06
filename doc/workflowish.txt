@@ -56,21 +56,21 @@ MAPPINGS                                                  *workflowish-mappings*
               Focus the current item or toggle focus mode off.
    n    *zp*
               Focus the parent of the current item.
-   nvo  ✠
-              Toggle between TODO and DONE state.
-   nvo  ࿀
-              Add a new line below current without opening folds.
-              #COMBAK: How is this useful?
-  invo  <C-t>
-              Append the current timestamp after the current line.
+   n    <TAB>
+              Shift the current line one tabwidth to the right.
+   n    <S-TAB>
+              Shift the current line one tabwidth to the left.
    n    o
               Start a new line with a bullet below current line.
    n    O
               Start a new line with a bullet above current line.
-   n    <TAB>
-              Shift the current line one tabwidth to the right.
-   n    ࿁
-              Shift the current line one tabwidth to the left.
+   nvo  *<plug>(workflowish-todo-toggle)*
+              Toggle between TODO and DONE state.
+   nvo  *<plug>(workflowish-append-newline)*
+              Add a new line below current without adding a bullet.
+  invo  *<plug>(workflowish-insert-time)*
+              Append the current timestamp after the current line and enter
+              insert mode.
 
 ==============================================================================
 CONFIGURATION                                        *workflowish-configuration*
@@ -95,5 +95,13 @@ Variables:
     Default: "---inbox_end_line---"
     #TODO document g:workflowish_inbox_line_marker
 
+Recommended Mappings:
+>
+  nmap <buffer> <cr> <plug>(workflowish-todo-toggle)
+  " modify your terminal settings to send some key combination for Shift+Enter
+  nmap <buffer> <s-cr> <plug>(workflowish-append-newline)
+  nmap <buffer> <c-t> <plug>(workflowish-insert-time)
+  imap <buffer> <c-t> <plug>(workflowish-insert-time)
+<
 ==============================================================================
- vim:tw=78:ts=2:sw=2:noet:ft=help:norl:nolist:
+ vim:tw=78:ts=2:sw=2:noet:ft=help:norl:nolist:iskeyword+=-:
