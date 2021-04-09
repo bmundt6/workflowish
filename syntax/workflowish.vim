@@ -4,7 +4,7 @@ endif
 
 syn match WFToDoDot /^\s*\*/
 syn match WFToDo /^\s*\*(.*)/
-syn match WFPerson /@[a-zA-Z0-9_-]*/
+syn match WFPerson /@[a-zA-Z0-9_-]*/ contains=@NoSpell
 syn match WFTag  /#[a-zA-Z0-9_-]*/
 syn match WFDoneLine /^\s*-.*$/
 syn match WFComment /^\s*\\.*$/

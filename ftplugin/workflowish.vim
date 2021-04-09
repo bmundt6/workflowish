@@ -59,6 +59,8 @@ nmap <buffer> o o*
 nmap <buffer> <S-o> <S-o>* 
 
 " indent
+"TODO move the whole subtree
+"FIXME don't move more than one indent level to the right of the parent indent
 nmap <buffer> <TAB> >>
 nmap <buffer> <S-TAB> <<
 
