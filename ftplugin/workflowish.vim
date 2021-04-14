@@ -85,9 +85,15 @@ else
   endfu
 end
 
+function! s:SignColumnWidth()
+  " signcolumn takes up 2 columns, hardcoded
+  "TODO figure out whether or not it is active
+  " for now, just append two spaces to every foldtext
+  return 2
+endfunction
+
 function! s:WindowWidth()
-  " TODO: signcolumn takes up 2 columns, hardcoded
-  return winwidth(0) - &fdc - &number*&numberwidth - 2
+  return winwidth(0) - &fdc - &number*&numberwidth - s:SignColumnWidth()
 endfunction
 
 function! s:StripEnd(str)
@@ -218,7 +224,7 @@ function! WorkflowishFoldText()
     else
       " let fill_str = get(g:, 'workflowish_unfocused_fill_str', '- ')
       let fill_str = get(g:, 'workflowish_unfocused_fill_str', ' ')
-      return repeat(fill_str, s:WindowWidth() / strdisplaywidth(fill_str))
+      return repeat(fill_str, (s:WindowWidth() + 2) / strdisplaywidth(fill_str))
     endif
   else
   " 使ってないとき
@@ -231,7 +237,7 @@ function! WorkflowishFoldText()
       let firstline = substitute(firstline, "\\v^ {".indent(l:focusOn)."}", "", "")
     end
 
-    return firstline . repeat(" ", s:WindowWidth()-s:StringWidth(firstline.textend)) . textend
+    return firstline . repeat(" ", s:WindowWidth()-s:StringWidth(firstline.textend)) . textend . "  "
   endif
 endfunction
 
@@ -250,7 +256,7 @@ function! WorkflowishBreadcrumbs(lstart, lend)
     end
   endfor
   let breadtrace = divider . ' ' . breadtrace
-  return breadtrace . repeat(" ", s:WindowWidth()-s:StringWidth(breadtrace))
+  return breadtrace . repeat(" ", s:WindowWidth() - s:StringWidth(breadtrace) + 2)
 endfunction
 
 "}}}
@@ -287,11 +293,11 @@ function! WorkflowishFocusOn(lnum)
   endif
   " close top/line1 unless focused
   if a:lnum != 1
-    normal! 1Gzc
+    silent! normal! 1Gzc
   endif
   " close bottom
   if a:lnum != line('$')
-    normal! Gzc
+    silent! normal! Gzc
   end
   " jump to focus line and unfold
   exe 'normal!' a:lnum . 'G'
