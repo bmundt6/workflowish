@@ -13,6 +13,8 @@ setlocal foldexpr=WorkflowishCompactFoldLevel(v:lnum)
 
 setlocal autoindent
 
+let w:workflowish_prev_wrap=&wrap
+
 " Commands {{{
 command! -buffer B Denite wo_tagLine:@B
 command! -buffer C Denite wo_tagLine:@cheat
@@ -105,6 +107,7 @@ function! s:CleanLineForBreadcrumb(lnum)
   return s:StripEnd(substitute(getline(a:lnum), "\\v^( *)(\\\\|\\*|\\-) ", "", ""))
 endfunction
 
+" returns the first line number above current which has a greater indent than current
 function! s:PreviousIndent(lnum)
   let lastindent = indent(a:lnum)
   for line in range(a:lnum-1, 1, -1)
@@ -118,25 +121,6 @@ endfunction
 "}}}
 " Window attribute methods {{{
 " Couldn't find any other 'sane' way to initialize window variables
-
-" 現在フォーカスしている場所の先頭の行数を返す
-" フォーカスしていない場合は0
-" Returns the line number at the beginning of the currently focused location
-" 0 if not in focus
-function! s:GetFocusOn()
-  if !exists("w:workflowish_focus_on")
-    let w:workflowish_focus_on = 0
-  endif
-  return w:workflowish_focus_on
-endfunction
-
-" フォーカス機能を利用したときに実行される
-" フォーカスしたとこの行数をセットする
-" Executed when using the focus function
-" Sets the focused line number
-function! s:SetFocusOn(lnum)
-  let w:workflowish_focus_on = a:lnum
-endfunction
 
 " Yes it looks horrible, and it is.
 " This will be checked row for row, i.e. 1,2,3,4,5,6,7,8 and then maybe 4,5,6,7,8 and
@@ -192,7 +176,7 @@ endfunction
 
 " This feature hides all nested lines under the main one, like workflowy.
 function! WorkflowishCompactFoldLevel(lnum)
-  let focusOn = s:GetFocusOn()
+  let l:focusOn = get(w:, 'workflowish_focus_on', 0)
   if l:focusOn > 0
     if a:lnum == 1
       call s:RecomputeFocusOnEnd(l:focusOn)
@@ -225,14 +209,16 @@ endfunction
 " foldしたときのテキストを決める
 " Determine the text when folded
 function! WorkflowishFoldText()
-  let focusOn = s:GetFocusOn()
+  let l:focusOn = get(w:, 'workflowish_focus_on', 0)
   if l:focusOn > 0 && !(v:foldstart >= l:focusOn && v:foldstart <= s:RecomputeFocusOnEnd(l:focusOn))
   " フォーカス機能使ってるとき
   " when focus mode is active
     if v:foldstart ==# 1
       return WorkflowishBreadcrumbs(v:foldstart, v:foldend)
     else
-      return repeat("- ", s:WindowWidth() / 2)
+      " let fill_str = get(g:, 'workflowish_unfocused_fill_str', '- ')
+      let fill_str = get(g:, 'workflowish_unfocused_fill_str', ' ')
+      return repeat(fill_str, s:WindowWidth() / strdisplaywidth(fill_str))
     endif
   else
   " 使ってないとき
@@ -241,8 +227,8 @@ function! WorkflowishFoldText()
     let firstline = getline(v:foldstart)
     let textend = '|' . lines . '| '
 
-    if g:workflowish_experimental_horizontal_focus == 1 && s:GetFocusOn() > 0
-      let firstline = substitute(firstline, "\\v^ {".w:workflowish_focus_indent."}", "", "")
+    if g:workflowish_experimental_horizontal_focus == 1 && l:focusOn > 0
+      let firstline = substitute(firstline, "\\v^ {".indent(l:focusOn)."}", "", "")
     end
 
     return firstline . repeat(" ", s:WindowWidth()-s:StringWidth(firstline.textend)) . textend
@@ -250,18 +236,20 @@ function! WorkflowishFoldText()
 endfunction
 
 function! WorkflowishBreadcrumbs(lstart, lend)
+  let divider = get(g:, 'workflowish_breadcrumb_divider', get(g:, 'airline_left_alt_sep', get(g:, 'airline_left_sep', '>')))
   let breadtrace = ""
   let lastindent = indent(a:lend+1)
   for line in range(a:lend, a:lstart, -1)
     if lastindent > indent(line)
-      let breadtrace = s:CleanLineForBreadcrumb(line) . " > " . breadtrace
+      if "" == breadtrace
+        let breadtrace = s:CleanLineForBreadcrumb(line)
+      else
+        let breadtrace = s:CleanLineForBreadcrumb(line) . ' '.divider.' ' . breadtrace
+      endif
       let lastindent = indent(line)
     end
   endfor
-  let breadtrace = substitute(breadtrace, " > $", "", "")
-  if breadtrace == ""
-    let breadtrace = "Root"
-  endif
+  let breadtrace = divider . ' ' . breadtrace
   return breadtrace . repeat(" ", s:WindowWidth()-s:StringWidth(breadtrace))
 endfunction
 
@@ -269,7 +257,7 @@ endfunction
 " Feature : Focus {{{
 
 function! WorkflowishFocusToggle(lnum)
-  if a:lnum == s:GetFocusOn()
+  if a:lnum == get(w:, 'workflowish_focus_on', 0)
     call WorkflowishFocusOff()
   else
     call WorkflowishFocusOn(a:lnum)
@@ -280,35 +268,60 @@ function! WorkflowishFocusOn(lnum)
   if a:lnum == 0
     return WorkflowishFocusOff()
   end
-  call s:SetFocusOn(a:lnum)
+  let w:workflowish_focus_on = a:lnum
+  " save initial cursor position
+  let pos = getpos('.')
+  " jump to lnum, reparse folds and open fold at cursor
+  exe 'normal! '.a:lnum.'Gzx'
   if g:workflowish_experimental_horizontal_focus == 1
-    let w:workflowish_focus_indent = indent(a:lnum)
     " nowrap is needed to scroll horizontally
+    let w:workflowish_prev_wrap=&wrap
     setlocal nowrap
-    normal! "0zs"
+    if &list && &listchars =~ 'precedes'
+      " if there is a 'precedes' listchar in &listchars, scroll once to the right
+      normal! ^hzs
+    else
+      " scroll the first non-blank char over to the left
+      normal! ^zs
+    endif
   endif
-  " reparse folds, close top/line1 unless focused, close bottom, go back
-  normal zx
+  " close top/line1 unless focused
   if a:lnum != 1
-    normal 1Gzc
+    normal! 1Gzc
   endif
+  " close bottom
   if a:lnum != line('$')
-    normal Gzc
+    normal! Gzc
   end
-  execute "normal" a:lnum . "Gzv"
+  " jump to focus line and unfold
+  exe 'normal!' a:lnum . 'G'
+  normal! zv
+  " unfold the entire focus region
+  " silent! normal! zczO
+  if g:workflowish_experimental_horizontal_focus
+    " don't move cursor to the previous column when using experimental horizontal focus
+    let curpos = getpos('.')
+    let pos[2] = curpos[2]
+    let pos[3] = curpos[3]
+  endif
+  "jump to original position
+  call setpos('.', pos)
+  " unfold original position
+  normal! zv
 endfunction
 
 function! WorkflowishFocusOff()
-  call s:SetFocusOn(0)
-  if g:workflowish_experimental_horizontal_focus == 1
+  let w:workflowish_focus_on = 0
+  if w:workflowish_prev_wrap
     setlocal wrap
-  end
+  endif
   normal zx
 endfunction
 
 function! WorkflowishFocusPrevious()
-  if s:GetFocusOn() > 0
-    call WorkflowishFocusOn(s:PreviousIndent(s:GetFocusOn()))
+  let w:workflowish_focus_on = get(w:, 'workflowish_focus_on', 0)
+  if w:workflowish_focus_on > 0
+    call WorkflowishFocusOn(s:PreviousIndent(w:workflowish_focus_on))
   end
 endfunction
 
