@@ -274,6 +274,9 @@ function! WorkflowishFocusOn(lnum)
   if a:lnum == 0
     return WorkflowishFocusOff()
   end
+  if !exists('w:workflowish_prev_wrap')
+    let w:workflowish_prev_wrap=&wrap
+  endif
   let w:workflowish_focus_on = a:lnum
   " save initial cursor position
   let pos = getpos('.')
@@ -281,7 +284,6 @@ function! WorkflowishFocusOn(lnum)
   exe 'normal! '.a:lnum.'Gzx'
   if g:workflowish_experimental_horizontal_focus == 1
     " nowrap is needed to scroll horizontally
-    let w:workflowish_prev_wrap=&wrap
     setlocal nowrap
     if &list && &listchars =~ 'precedes'
       " if there is a 'precedes' listchar in &listchars, scroll once to the right
@@ -318,7 +320,8 @@ endfunction
 
 function! WorkflowishFocusOff()
   let w:workflowish_focus_on = 0
-  if w:workflowish_prev_wrap
+  if exists('w:workflowish_prev_wrap') && w:workflowish_prev_wrap
+    unlet w:workflowish_prev_wrap
     setlocal wrap
   endif
   normal zx
