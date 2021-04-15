@@ -2,6 +2,8 @@ setlocal foldlevel=0
 setlocal foldenable
 setlocal sw=2 sts=2
 setlocal expandtab
+" so that #tags can be selected by <cword>
+setlocal iskeyword+=#
 
 " foldした時に表示するtextを決める
 setlocal foldtext=WorkflowishFoldText()
