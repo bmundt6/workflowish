@@ -48,7 +48,12 @@ endif
 "FIXME: add a config to turn off default mappings
 
 nnoremap <silent> <plug>(workflowish-focus-toggle) :call WorkflowishFocusToggle(line("."))<cr>
+nnoremap <silent> <plug>(workflowish-focus-line-horizontal) :call WorkflowishFocusLineHorizontal()<cr>
+"TODO unfold only todo items, leave completed items folded
+nnoremap <silent> <plug>(workflowish-unfold-line) :call WorkflowishUnfoldLine()<cr>
 nmap <buffer> zq <plug>(workflowish-focus-toggle)
+" use this mapping to open the focused line on drill-down
+" nmap <buffer> zq <plug>(workflowish-focus-toggle)<plug>(workflowish-unfold-line)<plug>(workflowish-focus-line-horizontal)
 nnoremap <silent> <plug>(workflowish-focus-prev) :call WorkflowishFocusPrevious()<cr>
 nmap <buffer> zp <plug>(workflowish-focus-prev)
 noremap <silent> <plug>(workflowish-todo-toggle) :call TodoSwitcher()<cr>
@@ -122,6 +127,11 @@ function! s:PreviousIndent(lnum)
     end
   endfor
   return 0
+endfunction
+
+" Recursively unfold the current line even if it is open
+function! WorkflowishUnfoldLine()
+  silent! normal! zOzczO
 endfunction
 
 "}}}
@@ -262,7 +272,20 @@ endfunction
 "}}}
 " Feature : Focus {{{
 
+function! WorkflowishFocusLineHorizontal()
+  if &list && &listchars =~ 'precedes'
+    " if there is a 'precedes' listchar in &listchars, scroll once to the right
+    normal! ^hzs
+  else
+    " scroll the first non-blank char over to the left
+    normal! ^zs
+  endif
+endfunction
+
 function! WorkflowishFocusToggle(lnum)
+  "TODO when horizontal focus is enabled,
+  "     toggle on if the screen is scrolled to the wrong column
+  "     regardless of the line number
   if a:lnum == get(w:, 'workflowish_focus_on', 0)
     call WorkflowishFocusOff()
   else
@@ -285,13 +308,7 @@ function! WorkflowishFocusOn(lnum)
   if g:workflowish_experimental_horizontal_focus == 1
     " nowrap is needed to scroll horizontally
     setlocal nowrap
-    if &list && &listchars =~ 'precedes'
-      " if there is a 'precedes' listchar in &listchars, scroll once to the right
-      normal! ^hzs
-    else
-      " scroll the first non-blank char over to the left
-      normal! ^zs
-    endif
+    call WorkflowishFocusLineHorizontal()
   endif
   " close top/line1 unless focused
   if a:lnum != 1

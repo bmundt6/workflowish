@@ -1,0 +1,8 @@
+\ this is a list of to-do items for workflowish development
+* make this plugin fully compatible with vim-stay
+  * e.g. on reload, we should get the exact same set of open folds, as well as the correct horizontal scroll
+* emulate WorkFlowy's sidebar
+  * second view of the same file to look at just the headings
+    * using the focus mapping in the sidebar creates the focus folds in the main window instead
+  * add a symbol to represent "starred" headings, populate the loclist with starred headings automatically
+* upload ~/.vim/after files as reference for customization
