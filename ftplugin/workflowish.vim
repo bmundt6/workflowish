@@ -49,8 +49,8 @@ endif
 
 nnoremap <silent> <plug>(workflowish-focus-toggle) :call WorkflowishFocusToggle(line("."))<cr>
 nnoremap <silent> <plug>(workflowish-focus-line-horizontal) :call WorkflowishFocusLineHorizontal()<cr>
-"TODO unfold only todo items, leave completed items folded
-nnoremap <silent> <plug>(workflowish-unfold-line) :call WorkflowishUnfoldLine()<cr>
+nnoremap <silent> <plug>(workflowish-unfold-line) :call WorkflowishUnfoldLine(0)<cr>
+nnoremap <silent> <plug>(workflowish-unfold-line-todo) :call WorkflowishUnfoldLine(1)<cr>
 nmap <buffer> zq <plug>(workflowish-focus-toggle)
 " use this mapping to open the focused line on drill-down
 " nmap <buffer> zq <plug>(workflowish-focus-toggle)<plug>(workflowish-unfold-line)<plug>(workflowish-focus-line-horizontal)
@@ -130,8 +130,15 @@ function! s:PreviousIndent(lnum)
 endfunction
 
 " Recursively unfold the current line even if it is open
-function! WorkflowishUnfoldLine()
-  silent! normal! zOzczO
+function! WorkflowishUnfoldLine(todo_only)
+  silent! normal! zOzcVzO
+  if a:todo_only
+    let l:pos = getpos('.')
+    let l:line = l:pos[1]
+    " fold completed children back up
+    '<,'>folddoopen let prev_line = s:PreviousIndent(line('.')) | if prev_line != l:line && foldclosed(prev_line) < 0 && getline(prev_line) =~ '^\s*-' | exe prev_line . 'foldclose' | endif
+    call setpos('.', l:pos)
+  endif
 endfunction
 
 "}}}
