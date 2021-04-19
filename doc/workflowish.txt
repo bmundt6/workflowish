@@ -13,6 +13,7 @@ CONTENTS                                                  *workflowish-contents*
 	Functions .......................................... |workflowish-functions|
 	Mappings ............................................ |workflowish-mappings|
 	Configuration .................................. |workflowish-configuration|
+	Examples ............................................ |workflowish-examples|
 
 ==============================================================================
 FORMAT                                                      *workflowish-format*
@@ -102,6 +103,14 @@ Recommended Mappings:
   nmap <buffer> <s-cr> <plug>(workflowish-append-newline)
   nmap <buffer> <c-t> <plug>(workflowish-insert-time)
   imap <buffer> <c-t> <plug>(workflowish-insert-time)
+<
+==============================================================================
+EXAMPLES                                                  *workflowish-examples*
+
+Unfold only nodes with #tag:
+>
+  zm
+  :g/#tag/normal! zv
 <
 ==============================================================================
  vim:tw=78:ts=2:sw=2:noet:ft=help:norl:nolist:iskeyword+=-:

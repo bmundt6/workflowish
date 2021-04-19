@@ -138,6 +138,9 @@ function! WorkflowishUnfoldLine(todo_only)
     let l:pos = getpos('.')
     let l:line = l:pos[1]
     " fold completed children back up
+    "TODO make a command for properly folding nodes
+    " e.g. want to be able to do g/#tag/close to hide all nodes with #tag
+    " (g/#tag/normal! zvzc would work if we could do :g from bottom-to-top of file)
     '<,'>folddoopen let prev_line = s:PreviousIndent(line('.')) | if prev_line != l:line && foldclosed(prev_line) < 0 && getline(prev_line) =~ '^\s*-' | exe prev_line . 'foldclose' | endif
     call setpos('.', l:pos)
   endif
