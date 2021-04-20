@@ -610,5 +610,9 @@ function! workflowish#T(...)
   endif
 endfunction
 "}}}
+
+"TODO command for tag searches like Github, e.g.
+" :#s label1 -notlabel2 andlabel3
+
 "}}}
 " vim:set fdm=marker sw=2 sts=2 et:
