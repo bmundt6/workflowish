@@ -14,6 +14,8 @@ setlocal foldmethod=expr
 setlocal foldexpr=WorkflowishCompactFoldLevel(v:lnum)
 
 setlocal autoindent
+" never reveal concealed items so that horizontal focus using conceal allows natural editing
+setlocal concealcursor=nvic
 
 let w:workflowish_prev_wrap=&wrap
 
@@ -58,6 +60,7 @@ nmap <buffer> zq <plug>(workflowish-focus-toggle)
 " nmap <buffer> zq <plug>(workflowish-focus-toggle)<plug>(workflowish-unfold-line)<plug>(workflowish-focus-line-horizontal)
 nnoremap <silent> <plug>(workflowish-focus-prev) :call WorkflowishFocusPrevious()<cr>
 nmap <buffer> zp <plug>(workflowish-focus-prev)
+"TODO jump to the next header at the same indent level as the completed node after toggling
 noremap <silent> <plug>(workflowish-todo-toggle) :call TodoSwitcher()<cr>
 noremap <silent> <plug>(workflowish-append-newline) :call AddNewLine()<cr>i
 noremap <silent> <plug>(workflowish-insert-time) <ESC>:call workflowish#InputTime()<cr>a 
@@ -318,6 +321,9 @@ function! WorkflowishFocusOn(lnum)
   " jump to lnum, reparse folds and open fold at cursor
   exe 'normal! '.a:lnum.'Gzx'
   if g:workflowish_experimental_horizontal_focus == 1
+    "TODO alternate implementation using matchadd:
+    " matchadd('Conceal', '^  ')
+
     " nowrap is needed to scroll horizontally
     setlocal nowrap
     call WorkflowishFocusLineHorizontal()
