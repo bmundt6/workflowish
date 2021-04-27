@@ -28,7 +28,7 @@ class Kind(Jump):
 
     def _validate_arg(self, arg):
         if type(arg) != str:
-            #TODO error handring
+            #TODO error handling
             return 'error'
         return arg
 

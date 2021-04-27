@@ -149,6 +149,15 @@ function! WorkflowishUnfoldLine(todo_only)
   endif
 endfunction
 
+"TODO command/mapping for searching/operating on hierarchy
+" e.g. something like
+"   :wfg/*-/-/zv
+" might unfold all completed children of children of the root node;
+"   :wfg/**/-/d
+" might recursively delete all completed nodes;
+"   :wfg/**/-/**/#todo/p
+" might print all nodes with the #todo tag under a completed node
+
 "}}}
 " Window attribute methods {{{
 " Couldn't find any other 'sane' way to initialize window variables
@@ -619,6 +628,10 @@ endfunction
 
 "TODO command for tag searches like Github, e.g.
 " :#s label1 -notlabel2 andlabel3
+"NOTE: you can probably make do using :BLines from https://github.com/junegunn/fzf.vim
+" e.g. if I want to look for items due today that aren't waiting on somebody else for input, I would do:
+"   :BLines
+"   BLines> '#today !'#waiting
 
 "}}}
 " vim:set fdm=marker sw=2 sts=2 et:
