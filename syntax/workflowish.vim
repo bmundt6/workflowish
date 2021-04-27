@@ -6,9 +6,19 @@ syn cluster WFBits contains=WFTag,WFPerson,WFFilePath
 syn cluster WFRegions contains=WFToDo,WFDone,WFComment
 syn cluster WFMarks contains=WFTodoMark,WFCommentMark
 
-syn region WFToDo start=/^\z(\s*\)[*]/ skip=/^\z1\s\+.*/ end=/^\(\s*[*\\-]\)\@=/ contains=@WFRegions,@WFBits,WFTodoMark
-syn region WFDone start=/^\z(\s*\)[-]/ skip=/^\z1\s\+.*/ end=/^\(\s*[*\\-]\)\@=/ contains=@WFBits,@WFMarks
-syn region WFComment start=/^\z(\s*\)\\/ skip=/^\z1\s\+.*/ end=/^\(\s*[*\\-]\)\@=/ contains=@WFRegions,@WFBits,WFCommentMark
+syn cluster WFToDo contains=@WFRegions,@WFBits,WFTodoMark
+syn cluster WFDone contains=@WFBits,@WFMarks
+syn cluster WFComment contains=@WFRegions,@WFBits,WFCommentMark
+
+" if you don't like the look of names/tags/marks appearing highlighted within Done regions,
+" place this in ~/.vim/after/syntax/workflowish.vim:
+"
+"   syn cluster WFDone remove=@WFBits,@WFMarks
+"
+
+syn region WFToDo start=/^\z(\s*\)[*]/ skip=/^\z1\s\+.*/ end=/^\(\s*[*\\-]\)\@=/ contains=@WFTodo
+syn region WFDone start=/^\z(\s*\)[-]/ skip=/^\z1\s\+.*/ end=/^\(\s*[*\\-]\)\@=/ contains=@WFDone
+syn region WFComment start=/^\z(\s*\)\\/ skip=/^\z1\s\+.*/ end=/^\(\s*[*\\-]\)\@=/ contains=@WFComment
 
 syn match WFTodoMark /^\s*\*/ contained
 syn match WFCommentMark /^\s*\\/ contained
