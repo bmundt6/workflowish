@@ -18,6 +18,7 @@ syn match WFPerson /@[[:ident:][:punct:]]*/ contained contains=@NoSpell
 " borrowed from https://github.com/MTDL9/vim-log-highlighting.git
 syn match WFFilePath '\<\w:\\[^\n|,; ()'"\]{}]\+' contained contains=@NoSpell
 syn match WFFilePath '[^a-zA-Z0-9"']\@<=\(\~\w*\)\?[/]\f[^\n|,; ()'"\]{}]\+' contained contains=@NoSpell
+syn match WFFilePath /\<\a\f*\.\a\+\>/ contained contains=@NoSpell
 
 hi def link WFTodoMark Function
 hi def link WFDone Comment
