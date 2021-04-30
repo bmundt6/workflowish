@@ -1,4 +1,4 @@
-\ vi: ft=workflowish:nospell:
+\ vi: ft=workflowish:nospell:noundofile:
 \ this is a list of to-do items for workflowish development
 * make this plugin fully compatible with vim-stay
   * e.g. on reload, we should get the exact same set of open folds, as well as the correct horizontal scroll
@@ -7,3 +7,16 @@
     * using the focus mapping in the sidebar creates the focus folds in the main window instead
   * add a symbol to represent "starred" headings, populate the loclist with starred headings automatically
 * @bmundt6 upload ~/.vim/after files as reference for customization
+* optionally support manipulating workflowish trees within tables as per https://github.com/dhruvasagar/vim-table-mode
+  * e.g:
+    |-----------+-----------|
+    | foo       | bar       |
+    |-----------+-----------|
+    | * node    | * node    |
+    |   * child |   * child |
+    |-----------+-----------|
+    should:
+    * apply workflowish syntax highlighting within cells
+    * insert newlines to keep same foldlevel nodes aligned visually when one of them is a multi-line node #hard
+    * allow folding the whole table #easy
+    * allow folding the table at a specific node in the hovered column

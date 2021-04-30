@@ -10,4 +10,10 @@ let g:acp_behavior.workflowish = [
     \'completefunc': "workflowish#acp#completeWorkflowishTag",
     \'repeat': 0,
   \},
+  \{
+    \'meets': 'workflowish#acp#meetsForWorkflowishPerson',
+    \'command': "\<C-x>\<C-u>",
+    \'completefunc': "workflowish#acp#completeWorkflowishPerson",
+    \'repeat': 0,
+  \},
 \]
