@@ -6,6 +6,9 @@
   * second view of the same file to look at just the headings
     * using the focus mapping in the sidebar creates the focus folds in the main window instead
   * add a symbol to represent "starred" headings, populate the loclist with starred headings automatically
+  * make it possible to star searches like WorkFlowy (e.g. '+ "#easy -#blocked" in TODO.wofl')
+* #enhancement tag-based focus
+  * given a tag as input, use folds or matchgroups to hide or grey-out nodes not containing the tag
 * @bmundt6 upload ~/.vim/after files as reference for customization
 * optionally support manipulating workflowish trees within tables as per https://github.com/dhruvasagar/vim-table-mode
   * e.g:

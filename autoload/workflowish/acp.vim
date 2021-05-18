@@ -1,20 +1,20 @@
 " this file defines functions for AutoComplPop integration
 
 fun! s:WordMeetsByPrefix(context, lengthvar, prefix)
-  echomsg 'WordMeetsByPrefix'
-  echomsg 'context = ' . a:context
-  echomsg 'lengthvar = ' . a:lengthvar
-  echomsg 'prefix = ' . a:prefix
+  " echomsg 'WordMeetsByPrefix'
+  " echomsg 'context = ' . a:context
+  " echomsg 'lengthvar = ' . a:lengthvar
+  " echomsg 'prefix = ' . a:prefix
   let minlength = get(g:, a:lengthvar, 0)
-  echomsg 'minlength = ' . string(minlength)
+  " echomsg 'minlength = ' . string(minlength)
   if minlength < 0
     return 0
   endif
   let expr = a:prefix . '\(\k\{' . minlength . ',}\)$'
-  echomsg 'expr = ' . expr
+  " echomsg 'expr = ' . expr
   let matches = matchlist(a:context, expr)
-  echomsg 'matches = ' . string(matches)
-  echomsg 'empty(matches) = ' . string(empty(matches))
+  " echomsg 'matches = ' . string(matches)
+  " echomsg 'empty(matches) = ' . string(empty(matches))
   return !empty(matches)
 endfun
 
@@ -31,10 +31,10 @@ fun! workflowish#acp#meetsForWorkflowishPerson(context)
 endfun
 
 fun! s:CompleteWordByPrefix(findstart, base, prefix)
-  echomsg 'CompleteWordByPrefix'
-  echomsg 'findstart = ' . string(a:findstart)
-  echomsg 'base = ' . string(a:base)
-  echomsg 'prefix = ' . string(a:prefix)
+  " echomsg 'CompleteWordByPrefix'
+  " echomsg 'findstart = ' . string(a:findstart)
+  " echomsg 'base = ' . string(a:base)
+  " echomsg 'prefix = ' . string(a:prefix)
   if a:findstart
     let current_text = strpart(getline('.'), 0, col('.') - 1)
     return match(current_text, a:prefix . '\k*$')
