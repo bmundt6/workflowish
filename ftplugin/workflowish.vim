@@ -60,10 +60,13 @@ nmap <buffer> zq <plug>(workflowish-focus-toggle)
 " nmap <buffer> zq <plug>(workflowish-focus-toggle)<plug>(workflowish-unfold-line)<plug>(workflowish-focus-line-horizontal)
 nnoremap <silent> <plug>(workflowish-focus-prev) :call WorkflowishFocusPrevious()<cr>
 nmap <buffer> zp <plug>(workflowish-focus-prev)
-"TODO jump to the next header at the same indent level as the completed node after toggling
 noremap <silent> <plug>(workflowish-todo-toggle) :call TodoSwitcher()<cr>
 noremap <silent> <plug>(workflowish-append-newline) :call AddNewLine()<cr>i
 noremap <silent> <plug>(workflowish-insert-time) <ESC>:call workflowish#InputTime()<cr>a 
+noremap <silent> <plug>(workflowish-jump-next-same-rank) <cmd>call workflowish#jumpSameRank('w')<cr>
+noremap <silent> <plug>(workflowish-jump-prev-same-rank) <cmd>call workflowish#jumpSameRank('wb')<cr>
+map <buffer> [[ <plug>(workflowish-jump-prev-same-rank)
+map <buffer> ]] <plug>(workflowish-jump-next-same-rank)
 
 " auto insert *
 "TODO: use vim-endwise plugin to implement this behavior in insert mode
@@ -614,6 +617,62 @@ function! workflowish#findSameRankLineList(...)
 
   return l:line_list
 endfunction "}}}
+" jumpSameRank() jump to the next line of the same rank as current {{{
+function! workflowish#jumpSameRank(flags)
+  let l:backward = (a:flags =~ 'b')
+  let l:wrap = (a:flags =~ 'w')
+  let l:last_line = line("$")
+  let l:cur_lnum = line('.') " line the cursor is on
+  let l:start_lnum = workflowish#findParent(l:cur_lnum) + 1 " first line of the current fold
+  if l:start_lnum == 0
+    let l:start_lnum = 1
+  endif
+  let l:target_indent = workflowish#indent(l:start_lnum)
+
+  " initial search:
+  " - forward from l:cur_lnum for next line with same rank, OR
+  " - backward from l:cur_lnum for previous line with same rank
+  let l:step = (l:backward) ? -1 : 1
+  let l:lnum = l:cur_lnum + l:step
+  let l:indent = workflowish#indent(l:lnum)
+  while l:target_indent <= l:indent && l:lnum <= l:last_line && (l:lnum >= l:start_lnum || !l:backward)
+    if l:indent == l:target_indent
+      exe string(l:lnum)
+      return
+    endif
+    let l:lnum = l:lnum + l:step
+    let l:indent = workflowish#indent(l:lnum)
+  endwhile
+
+  " secondary search:
+  " - forward from l:start_lnum to l:cur_lnum, OR
+  " - 'backward' from end line (i.e. scan forward to final target_indent)
+  if (l:wrap)
+    if (l:backward)
+      let l:lnum = l:cur_lnum + 1
+      let l:indent = workflowish#indent(l:lnum)
+      while l:target_indent <= l:indent && l:lnum <= l:last_line
+        if l:indent == l:target_indent
+          exe string(l:lnum)
+        endif
+        let l:lnum = l:lnum + 1
+        let l:indent = workflowish#indent(l:lnum)
+      endwhile
+    else
+      let l:lnum = l:start_lnum
+      let l:indent = workflowish#indent(l:lnum)
+      while l:target_indent <= l:indent && l:lnum <= l:cur_lnum
+        if l:indent == l:target_indent
+          exe string(l:lnum)
+          return
+        endif
+        let l:lnum = l:lnum + 1
+        let l:indent = workflowish#indent(l:lnum)
+      endwhile
+    endif
+  endif
+endfunction "}}}
+
 " T() for 'T' command {{{
 function! workflowish#T(...)
   if len(a:000) == 0

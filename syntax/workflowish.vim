@@ -4,7 +4,7 @@ endif
 
 syn cluster WFBits contains=WFTag,WFPerson,WFFilePath
 syn cluster WFRegions contains=WFToDo,WFDone,WFComment
-syn cluster WFMarks contains=WFTodoMark,WFCommentMark
+syn cluster WFMarks contains=WFTodoMark,WFCommentMark,WFDoneMark
 
 syn cluster WFToDo contains=@WFRegions,@WFBits,WFTodoMark
 syn cluster WFDone contains=@WFBits,@WFMarks
@@ -21,6 +21,7 @@ syn region WFDone start=/^\z(\s*\)[-]/ skip=/^\z1\s\+.*/ end=/^\(\s*[*\\-]\)\@=/
 syn region WFComment start=/^\z(\s*\)\\/ skip=/^\z1\s\+.*/ end=/^\(\s*[*\\-]\)\@=/ contains=@WFComment
 
 syn match WFTodoMark /^\s*\*/ contained
+syn match WFDoneMark /^\s*-/ contained
 syn match WFCommentMark /^\s*\\/ contained
 
 syn match WFTag  /#[a-zA-Z0-9_-]*/ contained
@@ -32,6 +33,7 @@ syn match WFFilePath /\<\a\f*\.\a\+\>/ contained contains=@NoSpell
 
 hi def link WFTodoMark Function
 hi def link WFDone Comment
+hi def link WFDoneMark WFDone
 hi def link WFCommentMark Delimiter
 hi def link WFComment Delimiter
 hi def link WFPerson Function

@@ -72,6 +72,10 @@ MAPPINGS                                                  *workflowish-mappings*
   invo  *<plug>(workflowish-insert-time)*
               Append the current timestamp after the current line and enter
               insert mode.
+   nvo  *[[*
+              Jump to the previous item at the same rank as the current item.
+   nvo  *]]*
+              Jump to the next item at the same rank as the current item.
 
 ==============================================================================
 CONFIGURATION                                        *workflowish-configuration*
