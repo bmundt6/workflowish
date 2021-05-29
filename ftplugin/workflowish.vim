@@ -693,4 +693,17 @@ endfunction
 "   BLines> '#today !'#waiting
 
 "}}}
+" Plugin Integrations {{{
+
+" vim-commentary: provides comment/uncomment mappings {{{
+" use workflowish-style backslash comments
+let b:commentary_format = '\ %s'
+" use markdown-style backtick inline-code quotes
+" let b:commentary_format = '`%s`'
+" use markdown-style backtick code block quotes
+" (commentary does not support newlines)
+" let b:commentary_format = "```%s```"
+" }}}
+
+" }}}
 " vim:set fdm=marker sw=2 sts=2 et:
