@@ -69,6 +69,12 @@ MAPPINGS                                                  *workflowish-mappings*
               Toggle between TODO and DONE state.
    nvo  *<plug>(workflowish-append-newline)*
               Add a new line below current without adding a bullet.
+   nvo  *<plug>(workflowish-move-subtree-up)*
+              Move all of the lines below the current node in hierarchy above
+							the previous line at the same rank.
+   nvo  *<plug>(workflowish-move-subtree-down)*
+              Move all of the lines below the current node in hierarchy below
+							the next line at the same rank.
   invo  *<plug>(workflowish-insert-time)*
               Append the current timestamp after the current line and enter
               insert mode.

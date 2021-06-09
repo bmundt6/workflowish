@@ -67,6 +67,8 @@ noremap <silent> <plug>(workflowish-jump-next-same-rank) <cmd>call workflowish#j
 noremap <silent> <plug>(workflowish-jump-prev-same-rank) <cmd>call workflowish#jumpSameRank('wb')<cr>
 map <buffer> [[ <plug>(workflowish-jump-prev-same-rank)
 map <buffer> ]] <plug>(workflowish-jump-next-same-rank)
+noremap <silent> <plug>(workflowish-move-subtree-up) <cmd>call workflowish#moveSubtreeUp(line('.'))<cr>
+noremap <silent> <plug>(workflowish-move-subtree-down) <cmd>call workflowish#moveSubtreeDown(line('.'))<cr>
 
 " auto insert *
 "TODO: use vim-endwise plugin to implement this behavior in insert mode
@@ -532,6 +534,67 @@ function! workflowish#getParentLineList()
   return join(lineList, "/")
 endfunction
 "}}}
+" getSubtree() {{{ return range of lines below this node
+"                  (equivalently, range starts at lnum and ends at return value)
+function! workflowish#getSubtree(lnum)
+  let l:last_line = line("$")
+  let l:indent = workflowish#indent(a:lnum)
+  let l:cur_lnum = a:lnum + 1
+
+  " search for the next line with indent less than or equal to start
+  while l:cur_lnum < l:last_line
+    if workflowish#indent(l:cur_lnum) <= l:indent
+      return l:cur_lnum - 1
+    endif
+    let l:cur_lnum = l:cur_lnum + 1
+  endwhile
+
+  " if all lines have been exhausted and none had an outdent,
+  " then the last line of the file is the end of the subtree
+  return l:cur_lnum
+endfunction
+" }}}
+" moveSubtreeDown() {{{ swap subtree with the one below it
+function! workflowish#moveSubtreeDown(lnum)
+  let l:last_line = line('$')
+  let l:treeA_start = a:lnum
+  let l:treeA_end = workflowish#getSubtree(l:treeA_start)
+  let l:treeB_start = l:treeA_end + 1
+  if l:treeB_start > l:last_line
+    return
+  endif
+  let l:treeB_end = workflowish#getSubtree(l:treeB_start)
+  " swap the two regions
+  " (yank all lines of treeA, jump to end of treeB and paste)
+  let l:treeA_length = l:treeA_end - l:treeA_start + 1
+  let l:insertion_point = l:treeB_end - l:treeA_length
+  exe ''.l:treeA_start.','.l:treeA_end.'d'
+  exe string(l:insertion_point)
+  normal! p
+endfunction
+" }}}
+" moveSubtreeUp() {{{ swap subtree with the one above it
+function! workflowish#moveSubtreeUp(lnum)
+  let l:treeB_start = a:lnum
+  let l:treeA_end = l:treeB_start - 1
+  if l:treeA_end < 1
+    return
+  endif
+  let l:treeA_start = workflowish#findPrevSameRank(l:treeB_start)
+  if l:treeA_start == l:treeB_start
+    return
+  endif
+  let l:treeB_end = workflowish#getSubtree(l:treeB_start)
+  " swap the two regions
+  " (yank all lines of treeA, jump to end of treeB and paste)
+  let l:treeA_length = l:treeA_end - l:treeA_start + 1
+  let l:insertion_point = l:treeB_end - l:treeA_length
+  exe ''.l:treeA_start.','.l:treeA_end.'d'
+  exe string(l:insertion_point)
+  normal! p
+  exe string(l:treeA_start)
+endfunction
+" }}}
 " checkBottomRank(lnum) : if Bottom, return 1. else return -1 {{{
 function! workflowish#checkBottomRank(lnum)
   let current_line = workflowish#indent(a:lnum)
@@ -617,6 +680,27 @@ function! workflowish#findSameRankLineList(...)
 
   return l:line_list
 endfunction "}}}
+" findPrevSameRank() {{{ find the previous line of the same rank as current
+"                        (if none found, return lnum)
+function! workflowish#findPrevSameRank(lnum)
+  if a:lnum < 2
+    return a:lnum
+  endif
+  let l:rank_indent = workflowish#indent(a:lnum)
+  let l:cur = a:lnum - 1
+  while l:cur > 0
+    let l:cur_indent = workflowish#indent(l:cur)
+    if l:cur_indent == l:rank_indent
+      return l:cur
+    endif
+    if l:cur_indent < l:rank_indent
+      return a:lnum
+    endif
+    let l:cur = l:cur - 1
+  endwhile
+  return a:lnum
+endfunction
+" }}}
 " jumpSameRank() jump to the next line of the same rank as current {{{
 function! workflowish#jumpSameRank(flags)
   let l:backward = (a:flags =~ 'b')
