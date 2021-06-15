@@ -561,7 +561,7 @@ function! workflowish#moveSubtreeDown(lnum)
   let l:folded = (l:treeA_start == foldclosed(l:treeA_start)) " check whether the root of top subtree is a closed fold
   let l:treeA_end = workflowish#getSubtree(l:treeA_start)
   let l:treeB_start = l:treeA_end + 1
-  if l:treeB_start > l:last_line
+  if l:treeB_start > l:last_line || workflowish#indent(l:treeB_start) !=# workflowish#indent(l:treeA_start)
     return
   endif
   let l:treeB_end = workflowish#getSubtree(l:treeB_start)
