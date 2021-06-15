@@ -558,6 +558,7 @@ endfunction
 function! workflowish#moveSubtreeDown(lnum)
   let l:last_line = line('$')
   let l:treeA_start = a:lnum
+  let l:folded = (l:treeA_start == foldclosed(l:treeA_start)) " check whether the root of top subtree is a closed fold
   let l:treeA_end = workflowish#getSubtree(l:treeA_start)
   let l:treeB_start = l:treeA_end + 1
   if l:treeB_start > l:last_line
@@ -571,9 +572,14 @@ function! workflowish#moveSubtreeDown(lnum)
   exe ''.l:treeA_start.','.l:treeA_end.'d'
   exe string(l:insertion_point)
   normal! p
+  if l:folded
+    " close fold if there was already a closed fold at the subtree root
+    foldclose
+  endif
 endfunction
 " }}}
 " moveSubtreeUp() {{{ swap subtree with the one above it
+"                     (implemented by finding subtree above and pasting it below current subtree)
 function! workflowish#moveSubtreeUp(lnum)
   let l:treeB_start = a:lnum
   let l:treeA_end = l:treeB_start - 1
@@ -584,6 +590,7 @@ function! workflowish#moveSubtreeUp(lnum)
   if l:treeA_start == l:treeB_start
     return
   endif
+  let l:folded = (l:treeA_start == foldclosed(l:treeA_start)) " check whether the root of top subtree is a closed fold
   let l:treeB_end = workflowish#getSubtree(l:treeB_start)
   " swap the two regions
   " (yank all lines of treeA, jump to end of treeB and paste)
@@ -592,6 +599,10 @@ function! workflowish#moveSubtreeUp(lnum)
   exe ''.l:treeA_start.','.l:treeA_end.'d'
   exe string(l:insertion_point)
   normal! p
+  if l:folded
+    " close fold if there was already a closed fold at the subtree root
+    foldclose
+  endif
   exe string(l:treeA_start)
 endfunction
 " }}}
