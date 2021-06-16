@@ -606,6 +606,9 @@ function! workflowish#moveSubtreeUp(lnum)
   exe string(l:treeA_start)
 endfunction
 " }}}
+"TODO: add a function (or shell script) for swapping the order of any pair of lines in a file (this could enable swapping lines from within a FZF search)
+"      - if lines are siblings (same rank with same parent), then the above functions will work
+"      - otherwise, find the closest mutual parent of the two lines and swap those instead
 " checkBottomRank(lnum) : if Bottom, return 1. else return -1 {{{
 function! workflowish#checkBottomRank(lnum)
   let current_line = workflowish#indent(a:lnum)
