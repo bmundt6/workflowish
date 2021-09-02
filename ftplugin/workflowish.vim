@@ -270,6 +270,14 @@ function! WorkflowishFoldText()
   " when focus mode is inactive
     let lines = v:foldend - v:foldstart
     let firstline = getline(v:foldstart)
+    if (&encoding ==# 'utf-8')
+      " display the line with strikethroughs if it is a done line
+      let synID = synID(v:foldstart, 1, 1)
+      let synName = synIDattr(synID, 'name')
+      if (synName ==# 'WFDone')
+        let firstline = substitute(firstline, '[^[:space:]]', '&̶', 'g')
+      endif
+    endif
     let textend = '|' . lines . '| '
 
     if g:workflowish_experimental_horizontal_focus == 1 && l:focusOn > 0
