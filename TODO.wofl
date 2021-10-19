@@ -1,12 +1,18 @@
 \ vi: ft=workflowish:nospell:noundofile:
 \ this is a list of to-do items for workflowish development
-* make this plugin fully compatible with vim-stay
-  * e.g. on reload, we should get the exact same set of open folds, as well as the correct horizontal scroll
+* improve automatic indentation/bullet insertion
+  * the default indent always matches the previous line; it should match the indentation of the first child of the current node if there is any
+  * custom indentexpr/equalprg?
+  * vim-endwise integration?
 * emulate WorkFlowy's sidebar
   * second view of the same file to look at just the headings
     * using the focus mapping in the sidebar creates the focus folds in the main window instead
   * add a symbol to represent "starred" headings, populate the loclist with starred headings automatically
   * make it possible to star searches like WorkFlowy (e.g. '+ "#easy -#blocked" in TODO.wofl')
+* set up matchit settings (b:match_words variable) to highlight/jump to the parent of the current node
+* steal TAB fold toggling concept from vim-orgmode (TAB cycles foldlevel of the hovered tree)
+* make this plugin fully compatible with vim-stay
+  * e.g. on reload, we should get the exact same set of open folds, as well as the correct horizontal scroll
 * #enhancement tag-based focus
   * given a tag as input, use folds or matchgroups to hide or grey-out nodes not containing the tag
 * @bmundt6 upload ~/.vim/after files as reference for customization
