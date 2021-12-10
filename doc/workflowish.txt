@@ -101,6 +101,12 @@ Variables:
     CapsLock is on). Set this option to disable the warning so that ZQ is
     mappable.
 
+  *g:workflowish_blank_is_outdent*
+    Boolean
+    Default: 0
+    Whether whitespace-only lines should be considered an outdent. This
+    affects how Workflowish determines the end of a subtree.
+
   *g:workflowish_inbox_line_marker*
     String
     Default: "---inbox_end_line---"

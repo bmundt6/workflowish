@@ -544,6 +544,7 @@ endfunction
 "}}}
 " getSubtree() {{{ return range of lines below this node
 "                  (equivalently, range starts at lnum and ends at return value)
+"FIXME: add a hook to skip lines by regexp to support custom syntax regions
 function! workflowish#getSubtree(lnum)
   let l:last_line = line("$")
   let l:indent = workflowish#indent(a:lnum)
@@ -551,7 +552,11 @@ function! workflowish#getSubtree(lnum)
 
   " search for the next line with indent less than or equal to start
   while l:cur_lnum < l:last_line
-    if workflowish#indent(l:cur_lnum) <= l:indent
+    let l:is_blank = (getline(l:cur_lnum) =~ '^\s*$')
+    let l:blank_is_outdent = get(g:, 'workflowish_blank_is_outdent', 0)
+    if l:is_blank && !l:blank_is_outdent
+      " skip
+    elseif workflowish#indent(l:cur_lnum) <= l:indent
       return l:cur_lnum - 1
     endif
     let l:cur_lnum = l:cur_lnum + 1
