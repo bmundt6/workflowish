@@ -380,7 +380,7 @@ function! WorkflowishFocusOff()
     unlet w:workflowish_prev_wrap
     setlocal wrap
   endif
-  normal zx
+  normal! zx
 endfunction
 
 function! WorkflowishFocusPrevious()
@@ -425,7 +425,7 @@ function! TodoSwitcher()
   endif
   let l:line = getline(l:l)
   let l:sp = split(l:line, ' ')
-  silent! normal zo
+  foldopen
 
   if l:sp[0] == '*'
     call remove(l:sp, 0)
@@ -447,7 +447,7 @@ function! TodoSwitcher()
 
   " If line s:l was in closed fold, close fold
   if l:isfolded > 0
-    normal zc
+    foldclose
   endif
 
 endfunction
@@ -640,7 +640,7 @@ endfunction
 function! workflowish#addInbox(...)
   if len(a:000) == 0
     "call search(g:workflowish_inbox_line_marker)
-    "normal zoO
+    "normal! zoO
     call workflowish#jumpInbox()
   else
     let l:pos = search(g:workflowish_inbox_line_marker, 'n')
@@ -656,7 +656,7 @@ endfunction
 function! workflowish#jumpInbox()
   let l:pos = search(g:workflowish_inbox_line_marker, 'n')
   call cursor(l:pos, 0)
-  normal zo
+  foldopen
 endfunction
 "{{{
 function! workflowish#getTime()
