@@ -141,16 +141,26 @@ endfunction
 " Recursively unfold the current line even if it is open
 function! WorkflowishUnfoldLine(todo_only)
   let l:pos = getpos('.')
-  silent! normal! zOzcVzO
-  if a:todo_only
-    let l:line = l:pos[1]
-    " fold completed children back up
-    "TODO make a command for properly folding nodes
-    " e.g. want to be able to do g/#tag/close to hide all nodes with #tag
-    " (g/#tag/normal! zvzc would work if we could do :g from bottom-to-top of file)
-    '<,'>folddoopen let prev_line = s:PreviousIndent(line('.')) | if prev_line > l:line && foldclosed(prev_line) < 0 && getline(prev_line) =~ '^\s*-' | exe prev_line . 'foldclose' | endif
+  let l:line = l:pos[1]
+  " minimal-unfold the current line
+  " then, non-recursively _fold_ the current line if it is a fold parent,
+  silent! normal! zvzc
+  " if we're not actually on a fold parent, then we're done now, just unfold and exit
+  if foldclosed('.') == l:line
+    " okay, this is a fold parent
+    " select the folded tree and recursively unfold
+    silent! normal! VzO
+    if a:todo_only
+      " fold completed children back up
+      "TODO make a command for properly folding nodes
+      " e.g. want to be able to do g/#tag/close to hide all nodes with #tag
+      " (g/#tag/normal! zvzc would work if we could do :g from bottom-to-top of file)
+      '<,'>folddoopen let prev_line = s:PreviousIndent(line('.')) | if prev_line > l:line && foldclosed(prev_line) < 0 && getline(prev_line) =~ '^\s*-' | exe prev_line . 'foldclose' | endif
+    endif
+    call setpos('.', l:pos)
   endif
-  call setpos('.', l:pos)
+  " unfold again in case current line is a "done" line
+  silent! normal! zv
 endfunction
 
 "TODO command/mapping for searching/operating on hierarchy
