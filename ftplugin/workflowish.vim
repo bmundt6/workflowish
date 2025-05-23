@@ -24,7 +24,6 @@ command! -buffer B Denite wo_tagLine:@B
 command! -buffer C Denite wo_tagLine:@cheat
 command! -buffer -nargs=* I call workflowish#addInbox(<f-args>)
 command! -buffer H Denite wo_hierarchy
-"command! T Denite wo_tag
 command! -buffer -nargs=? T call workflowish#T(<f-args>)
 " }}}
 
@@ -149,7 +148,7 @@ function! WorkflowishUnfoldLine(todo_only)
     "TODO make a command for properly folding nodes
     " e.g. want to be able to do g/#tag/close to hide all nodes with #tag
     " (g/#tag/normal! zvzc would work if we could do :g from bottom-to-top of file)
-    '<,'>folddoopen let prev_line = s:PreviousIndent(line('.')) | if prev_line != l:line && foldclosed(prev_line) < 0 && getline(prev_line) =~ '^\s*-' | exe prev_line . 'foldclose' | endif
+    '<,'>folddoopen let prev_line = s:PreviousIndent(line('.')) | if prev_line > l:line && foldclosed(prev_line) < 0 && getline(prev_line) =~ '^\s*-' | exe prev_line . 'foldclose' | endif
     call setpos('.', l:pos)
   endif
 endfunction
