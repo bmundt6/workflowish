@@ -88,6 +88,11 @@ CONFIGURATION                                        *workflowish-configuration*
 
 Variables:
 
+  *g:workflowish_no_mappings*
+    Boolean
+    Default: 0
+    Disable all default mappings.
+
   *g:workflowish_experimental_horizontal_focus*
     Boolean
     Default: 0

@@ -48,40 +48,43 @@ endif
 "}}}
 " Keybindings {{{
 
-"FIXME: add a config to turn off default mappings
-
 nnoremap <silent> <plug>(workflowish-focus-toggle) :call WorkflowishFocusToggle(line("."))<cr>
 nnoremap <silent> <plug>(workflowish-focus-line-horizontal) :call WorkflowishFocusLineHorizontal()<cr>
 nnoremap <silent> <plug>(workflowish-unfold-line) :call WorkflowishUnfoldLine(0)<cr>
 nnoremap <silent> <plug>(workflowish-unfold-line-todo) :call WorkflowishUnfoldLine(1)<cr>
-nmap <buffer> zq <plug>(workflowish-focus-toggle)
-" use this mapping to open the focused line on drill-down
-" nmap <buffer> zq <plug>(workflowish-focus-toggle)<plug>(workflowish-unfold-line)<plug>(workflowish-focus-line-horizontal)
 nnoremap <silent> <plug>(workflowish-focus-prev) :call WorkflowishFocusPrevious()<cr>
-nmap <buffer> zp <plug>(workflowish-focus-prev)
 noremap <silent> <plug>(workflowish-todo-toggle) :call TodoSwitcher()<cr>
 noremap <silent> <plug>(workflowish-append-newline) :call AddNewLine()<cr>i
 noremap <silent> <plug>(workflowish-insert-time) <ESC>:call workflowish#InputTime()<cr>a 
 noremap <silent> <plug>(workflowish-jump-next-same-rank) <cmd>call workflowish#jumpSameRank('w')<cr>
 noremap <silent> <plug>(workflowish-jump-prev-same-rank) <cmd>call workflowish#jumpSameRank('wb')<cr>
-map <buffer> [[ <plug>(workflowish-jump-prev-same-rank)
-map <buffer> ]] <plug>(workflowish-jump-next-same-rank)
 noremap <silent> <plug>(workflowish-move-subtree-up) <cmd>call workflowish#moveSubtreeUp(line('.'))<cr>
 noremap <silent> <plug>(workflowish-move-subtree-down) <cmd>call workflowish#moveSubtreeDown(line('.'))<cr>
 
-" auto insert *
-"TODO: use vim-endwise plugin to implement this behavior in insert mode
-nmap <buffer> o o* 
-nmap <buffer> <S-o> <S-o>* 
+if !get(g:, 'workflowish_no_mappings', 0)
 
-" indent
-"TODO move the whole subtree
-"FIXME don't move more than one indent level to the right of the parent indent
-nmap <buffer> <TAB> >>
-nmap <buffer> <S-TAB> <<
+  nmap <buffer> zq <plug>(workflowish-focus-toggle)
+  " use this mapping to open the focused line on drill-down
+  " nmap <buffer> zq <plug>(workflowish-focus-toggle)<plug>(workflowish-unfold-line)<plug>(workflowish-focus-line-horizontal)
+  nmap <buffer> zp <plug>(workflowish-focus-prev)
+  map <buffer> [[ <plug>(workflowish-jump-prev-same-rank)
+  map <buffer> ]] <plug>(workflowish-jump-next-same-rank)
 
-if g:workflowish_disable_zq_warning == 0
-  nnoremap <buffer> ZQ :call WorkflowishZQWarningMessage()<cr>
+  " auto insert *
+  "TODO: use vim-endwise plugin to implement this behavior in insert mode
+  nmap <buffer> o o* 
+  nmap <buffer> <S-o> <S-o>* 
+
+  " indent
+  "TODO move the whole subtree
+  "FIXME don't move more than one indent level to the right of the parent indent
+  nmap <buffer> <TAB> >>
+  nmap <buffer> <S-TAB> <<
+
+  if g:workflowish_disable_zq_warning == 0
+    nnoremap <buffer> ZQ :call WorkflowishZQWarningMessage()<cr>
+  endif
+
 endif
 
 "}}}
