@@ -579,18 +579,43 @@ function! workflowish#getSubtree(lnum)
   return l:cur_lnum
 endfunction
 " }}}
-" moveSubtreeDown() {{{ swap subtree with the one below it
+" moveSubtreeDown() {{{ swap subtree (A) with the one below it (B)
 function! workflowish#moveSubtreeDown(lnum)
   let l:last_line = line('$')
   let l:treeA_start = a:lnum
   let l:folded = (l:treeA_start == foldclosed(l:treeA_start)) " check whether the root of top subtree is a closed fold
   let l:treeA_end = workflowish#getSubtree(l:treeA_start)
   let l:treeB_start = l:treeA_end + 1
-  if l:treeB_start > l:last_line || workflowish#indent(l:treeB_start) !=# workflowish#indent(l:treeA_start)
-    "TODO: optionally move tree A to the start of the next list at the same level
+  if l:treeB_start > l:last_line
     return
   endif
-  let l:treeB_end = workflowish#getSubtree(l:treeB_start)
+  let l:treeB_end = -1
+  if workflowish#indent(l:treeB_start) !=# workflowish#indent(l:treeA_start)
+    " optionally move tree A to the start of the next list at the same level
+    " find the parent fold (previous line with < indentlevel), if any
+    let l:parentA = workflowish#findParent(l:treeA_start)
+    if l:parentA > -1
+      " find the next line with a matching indent level to the parent fold, if any
+      let l:next_parentlevel = workflowish#findNextSameRank(l:parentA)
+      if l:next_parentlevel != l:parentA
+        " move treeA after the next parent node
+        let l:treeB_end = l:next_parentlevel
+        " always ensure next parent tree is unfolded before inserting
+        if l:next_parentlevel == foldclosed(l:next_parentlevel)
+          exe ''.l:next_parentlevel.','.l:next_parentlevel.'foldopen'
+        endif
+      else
+        return
+      endif
+    else
+      return
+    endif
+  else
+    let l:treeB_end = workflowish#getSubtree(l:treeB_start)
+  endif
+  if l:treeB_end < 0
+    return
+  endif
   " swap the two regions
   " (yank all lines of treeA, jump to end of treeB and paste)
   let l:treeA_length = l:treeA_end - l:treeA_start + 1
@@ -604,33 +629,48 @@ function! workflowish#moveSubtreeDown(lnum)
   endif
 endfunction
 " }}}
-" moveSubtreeUp() {{{ swap subtree with the one above it
-"                     (implemented by finding subtree above and pasting it below current subtree)
+" moveSubtreeUp() {{{ swap subtree (B) with the one above it (A)
 function! workflowish#moveSubtreeUp(lnum)
   let l:treeB_start = a:lnum
-  let l:treeA_end = l:treeB_start - 1
-  if l:treeA_end < 1
+  if l:treeB_start < 2
     return
   endif
+  let l:folded = (l:treeB_start == foldclosed(l:treeB_start)) " check whether the root of bottom subtree is a closed fold
   let l:treeA_start = workflowish#findPrevSameRank(l:treeB_start)
+  let l:insertion_point = l:treeA_start
   if l:treeA_start == l:treeB_start
-    "TODO: optionally tree B to the end of the previous list at the same level
-    return
+    " optionally move tree B to the end of the previous list at the same level
+    " find the parent fold (previous line with < indentlevel), if any
+    let l:parentB = workflowish#findParent(l:treeB_start)
+    if l:parentB > -1
+      " find the previous line with a matching indent level to the parent fold, if any
+      let l:prev_parent_tree = workflowish#findPrevSameRank(l:parentB)
+      if l:prev_parent_tree != l:parentB
+        " bottom subtree will go just before its own parent
+        let l:insertion_point = l:parentB
+        " always ensure previous parent tree is unfolded before inserting
+        if l:prev_parent_tree == foldclosed(l:prev_parent_tree)
+          exe ''.l:prev_parent_tree.','.l:prev_parent_tree.'foldopen'
+        endif
+      else
+        return
+      endif
+    else
+      return
+    endif
   endif
-  let l:folded = (l:treeA_start == foldclosed(l:treeA_start)) " check whether the root of top subtree is a closed fold
   let l:treeB_end = workflowish#getSubtree(l:treeB_start)
   " swap the two regions
-  " (yank all lines of treeA, jump to end of treeB and paste)
-  let l:treeA_length = l:treeA_end - l:treeA_start + 1
-  let l:insertion_point = l:treeB_end - l:treeA_length
-  exe ''.l:treeA_start.','.l:treeA_end.'d'
+  " (yank all lines of treeB, jump to start of treeA and paste-before)
+  exe ''.l:treeB_start.','.l:treeB_end.'d'
   exe string(l:insertion_point)
-  normal! p
+  normal! P
+
   if l:folded
     " close fold if there was already a closed fold at the subtree root
     foldclose
   endif
-  exe string(l:treeA_start)
+  " exe string(l:treeA_start)
 endfunction
 " }}}
 "TODO: add a function (or shell script) for swapping the order of any pair of lines in a file (this could enable swapping lines from within a FZF search)
@@ -738,6 +778,25 @@ function! workflowish#findPrevSameRank(lnum)
       return a:lnum
     endif
     let l:cur = l:cur - 1
+  endwhile
+  return a:lnum
+endfunction
+" }}}
+" findNextSameRank() {{{ find the next line of the same rank as current
+"                        (if none found, return lnum)
+function! workflowish#findNextSameRank(lnum)
+  let l:rank_indent = workflowish#indent(a:lnum)
+  let l:cur = a:lnum + 1
+  let l:last_line = line('$')
+  while l:cur <= l:last_line
+    let l:cur_indent = workflowish#indent(l:cur)
+    if l:cur_indent == l:rank_indent
+      return l:cur
+    endif
+    if l:cur_indent < l:rank_indent
+      return a:lnum
+    endif
+    let l:cur = l:cur + 1
   endwhile
   return a:lnum
 endfunction
