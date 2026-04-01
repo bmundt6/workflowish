@@ -438,7 +438,7 @@ function! TodoSwitcher()
   endif
   let l:line = getline(l:l)
   let l:sp = split(l:line, ' ')
-  foldopen
+  silent! foldopen
 
   if l:sp[0] == '*'
     call remove(l:sp, 0)
